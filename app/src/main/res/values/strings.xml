@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">FilhoEscola</string>
+    <string name="app_name">Filho na Escola</string>
+
+    <!-- C -->
+    <string name="cadastro">Cadastro</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="celular">Celular</string>
+    <string name="confirmacao">Confirmação</string>
+
+    <!-- E -->
+    <string name="enviar">Enviar</string>
+
+    <!-- N -->
+    <string name="nome_completo">Nome Completo</string>
+
+    <!-- MSG -->
+    <string name="msg_cadastro">Por favor, digite seus dados abaixo para completar seu cadastro</string>
+    <string name="msg_nome_completo">Digite aqui seu nome completo</string>
+    <string name="msg_aguarde">Aguarde enquanto confirmamos seu número.</string>
+    <string name="msg_ou_digite">Ou digite o código recebido por SMS abaixo:</string>
+
 </resources>
