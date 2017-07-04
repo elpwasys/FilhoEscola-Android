@@ -19,7 +19,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.CadastroActivity" />
-        <activity android:name=".activity.AguardeSMSActivity"></activity>
+        <activity android:name=".activity.AguardeSMSActivity" />
+        <activity
+            android:name=".activity.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -20,6 +20,7 @@ public class SplashScreenActivity extends AppActivity {
         setContentView(R.layout.activity_splash_screen);
 
         startActivity(new Intent(this,CadastroActivity.class));
+        finish();
 
     }
 

@@ -50,5 +50,6 @@ public class CadastroActivity extends AppCompatActivity {
     @OnClick(R.id.btn_enviar)
     public void enviar() {
         startActivity(new Intent(this,AguardeSMSActivity.class));
+        finish();
     }
 }

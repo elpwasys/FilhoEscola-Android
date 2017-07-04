@@ -1,5 +1,6 @@
 package br.com.wasys.filhoescola.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -108,6 +109,7 @@ public class AguardeSMSActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_cadastrar)
     public void cadastrar() {
-
+        startActivity(new Intent(this,HomeActivity.class));
+        finish();
     }
 }
