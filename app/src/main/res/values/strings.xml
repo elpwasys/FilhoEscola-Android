@@ -18,6 +18,7 @@
 
     <!-- N -->
     <string name="nome_completo">Nome Completo</string>
+    <string name="network_not_available">Internet indisponível</string>
 
     <!-- S -->
     <string name="semanal">Semanal</string>

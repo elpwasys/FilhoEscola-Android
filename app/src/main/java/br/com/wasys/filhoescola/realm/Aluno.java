@@ -4,24 +4,27 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by bruno on 04/07/17.
  */
 
 public class Aluno extends RealmObject {
-    private Integer id;
+
+    @PrimaryKey
+    private Long id;
     private String nome;
     private String nomeMae;
     private Date dataNascimento;
     private Escola escola;
     private RealmList<Mensagem> mensagens;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

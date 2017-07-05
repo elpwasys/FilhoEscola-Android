@@ -3,13 +3,15 @@ package br.com.wasys.filhoescola.realm;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by bruno on 04/07/17.
  */
 
 public class Mensagem extends RealmObject {
-    private Integer id;
+    @PrimaryKey
+    private Long id;
     private Date data;
     private String assunto;
     private String conteudo;
@@ -18,11 +20,11 @@ public class Mensagem extends RealmObject {
     private Escola escola;
     private Funcionario funcionario;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

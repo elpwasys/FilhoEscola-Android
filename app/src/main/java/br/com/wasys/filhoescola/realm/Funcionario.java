@@ -2,6 +2,7 @@ package br.com.wasys.filhoescola.realm;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by bruno on 04/07/17.
@@ -9,18 +10,19 @@ import io.realm.RealmObject;
 
 public class Funcionario extends RealmObject {
 
-    private Integer id;
+    @PrimaryKey
+    private Long id;
     private String tipo;
     private String nome;
     private String email;
     private Escola escola;
     private RealmList<Mensagem> mensagens;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
