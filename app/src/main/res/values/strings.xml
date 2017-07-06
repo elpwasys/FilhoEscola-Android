@@ -9,6 +9,7 @@
 
     <!-- D -->
     <string name="diaria">Diária</string>
+    <string name="data_nascimento">Data de Nascimento</string>
 
     <!-- E -->
     <string name="enviar">Enviar</string>
@@ -28,8 +29,15 @@
     <string name="msg_nome_completo">Digite aqui seu nome completo</string>
     <string name="msg_aguarde">Aguarde enquanto confirmamos seu número.</string>
     <string name="msg_ou_digite">Ou digite o código recebido por SMS abaixo:</string>
+    <string name="msg_liberar_permissao">É necessario que você libere as permissões</string>
     <string name="title_activity_home">Home</string>
 
+    <!-- MSG Validacao -->
+    <string name="msg_val_nome">Campo de nome completo em branco</string>
+    <string name="msg_val_data">Campo de data de nascimento em branco</string>
+    <string name="msg_val_ddd">Campo de DDD em branco</string>
+    <string name="msg_val_telefone">Campo de telefone em branco</string>
+    <string name="msg_val_campo_obrigatorio">Campo Obrigatório</string>
+
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

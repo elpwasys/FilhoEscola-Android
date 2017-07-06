@@ -56,13 +56,32 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/data_nascimento"/>
+            <br.com.wasys.library.widget.edittext.DateTextEdit
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:id="@+id/edt_data_nascimento"
+                android:hint="dd/mm/aaaa"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/branco"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/celular"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
+                <br.com.wasys.library.widget.edittext.DDDTextEdit
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/edt_ddd"
@@ -71,7 +90,7 @@
                     android:layout_weight="3"
                     android:hint="DDD"/>
 
-                <EditText
+                <br.com.wasys.library.widget.edittext.PhoneTextEdit
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/edt_numero"

@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AguardeSMSActivity extends AppCompatActivity {
+public class AguardeSMSActivity extends BaseActivity {
 
     @BindView(R.id.edt_digito_1) EditText edtDigito1;
     @BindView(R.id.edt_digito_2) EditText edtDigito2;

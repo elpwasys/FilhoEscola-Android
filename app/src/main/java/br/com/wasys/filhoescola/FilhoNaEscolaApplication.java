@@ -16,6 +16,7 @@ public class FilhoNaEscolaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Realm.init(getContext());
         RealmConfiguration configuration = new RealmConfiguration.Builder()
                 .name("data.realm")
                 .build();
