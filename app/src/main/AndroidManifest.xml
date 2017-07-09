@@ -9,9 +9,9 @@
     <application
         android:name=".FilhoNaEscolaApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/icone_app"
+        android:icon="@mipmap/ico_app"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/icone_app_redondo"
+        android:roundIcon="@mipmap/ico_app_redondo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity

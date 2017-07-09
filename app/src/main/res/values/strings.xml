@@ -1,11 +1,16 @@
 <resources>
     <string name="app_name">Filho na Escola</string>
 
+    <!-- A -->
+    <string name="ajuda">Ajuda</string>
+
     <!-- C -->
     <string name="cadastro">Cadastro</string>
     <string name="cadastrar">Cadastrar</string>
     <string name="celular">Celular</string>
     <string name="confirmacao">Confirmação</string>
+    <string name="configurar">Configurar</string>
+    <string name="close">Close</string>
 
     <!-- D -->
     <string name="diaria">Diária</string>
@@ -14,15 +19,23 @@
     <!-- E -->
     <string name="enviar">Enviar</string>
 
+    <!-- I -->
+    <string name="inicio">Início</string>
+
     <!-- M -->
     <string name="mensal">Mensal</string>
+    <string name="meu_cadastro">Meu Cadastro</string>
 
     <!-- N -->
     <string name="nome_completo">Nome Completo</string>
     <string name="network_not_available">Internet indisponível</string>
 
+    <!-- O -->
+    <string name="open">Open</string>
+
     <!-- S -->
     <string name="semanal">Semanal</string>
+    <string name="sair">Sair</string>
 
     <!-- MSG -->
     <string name="msg_cadastro">Por favor, digite seus dados abaixo para completar seu cadastro</string>

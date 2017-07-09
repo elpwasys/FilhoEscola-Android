@@ -2,9 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.wasys.filhoescola.activity.HomeActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:title="@string/inicio"
+            android:icon="@mipmap/ico_home"/>
+
+        <item
+            android:id="@+id/item_meu_cadastro"
+            android:title="@string/meu_cadastro"
+            android:icon="@mipmap/ico_pessoa"/>
+
+        <item
+            android:id="@+id/item_configurar"
+            android:title="@string/configurar"
+            android:icon="@mipmap/ico_configuracao"/>
+
+        <item
+            android:id="@+id/item_ajuda"
+            android:title="@string/ajuda"
+            android:icon="@mipmap/ico_help"/>
+
+        <item
+            android:id="@+id/item_sair"
+            android:title="@string/sair"/>
+    </group>
 </menu>
