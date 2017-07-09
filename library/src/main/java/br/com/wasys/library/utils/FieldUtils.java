@@ -42,14 +42,14 @@ public class FieldUtils {
     public static boolean isValueIsNullOrEmpty(EditText editText) {
         Editable editable = editText.getText();
         String text = String.valueOf(editable);
-        if (text != null || StringUtils.isNotBlank(text) || StringUtils.isNotEmpty(text)) {
+        if (text != null && StringUtils.isNotEmpty(text)) {
             return false;
         }
         return true;
     }
 
     public static boolean isValueIsNullOrEmpty(String text) {
-        if (text != null || StringUtils.isNotBlank(text) || StringUtils.isNotEmpty(text)) {
+        if (text != null && StringUtils.isNotEmpty(text)) {
             return false;
         }
         return true;
