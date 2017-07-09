@@ -39,7 +39,8 @@ public class SplashScreenActivity extends BaseActivity {
                 if (!grantedResults(grantResults)) {
                     showSnack(getString(R.string.msg_liberar_permissao));
                 }else{
-
+                    startActivity(new Intent(this,CadastroActivity.class));
+                    finish();
                 }
                 return;
             }

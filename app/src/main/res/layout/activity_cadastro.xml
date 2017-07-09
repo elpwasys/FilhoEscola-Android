@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cinza_fundo"
-    android:padding="30dp"
+    android:padding="20dp"
     tools:context="br.com.wasys.filhoescola.activity.CadastroActivity">
 
     <LinearLayout
@@ -86,7 +86,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/edt_ddd"
                     android:inputType="phone"
-                    android:maxLength="3"
                     android:layout_weight="3"
                     android:hint="DDD"/>
 
@@ -96,7 +95,6 @@
                     android:id="@+id/edt_numero"
                     android:inputType="phone"
                     android:layout_weight="1"
-                    android:maxLength="9"
                     android:hint="99999-9999"/>
 
             </LinearLayout>
@@ -108,7 +106,7 @@
     </LinearLayout>
 
     <Button
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
