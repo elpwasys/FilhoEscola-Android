@@ -9,8 +9,12 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
+import br.com.wasys.filhoescola.business.DispositivoBusiness;
+import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.library.utils.FieldUtils;
 import br.com.wasys.library.widget.edittext.DDDTextEdit;
@@ -19,6 +23,8 @@ import br.com.wasys.library.widget.edittext.PhoneTextEdit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
 
 public class CadastroActivity extends BaseActivity {
 
@@ -49,7 +55,7 @@ public class CadastroActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() == 3){
+                if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 3){
                     edtNumero.requestFocus();
                 }
             }
@@ -59,14 +65,14 @@ public class CadastroActivity extends BaseActivity {
     @OnClick(R.id.btn_enviar)
     public void enviar() {
 
-        DispositivoModel dispositivoModel = new DispositivoModel();
+        final DispositivoModel dispositivoModel = new DispositivoModel();
 
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         dispositivoModel.uuid = telephonyManager.getDeviceId();
 
         if(FieldUtils.isValueIsNullOrEmpty(edtNomeCompleto)){
             showSnack(getString(R.string.msg_val_nome));
-            edtDataNascimento.setError(getString(R.string.msg_val_campo_obrigatorio));
+            edtNomeCompleto.setError(getString(R.string.msg_val_campo_obrigatorio));
             return;
         }
 
@@ -78,18 +84,49 @@ public class CadastroActivity extends BaseActivity {
 
         if(FieldUtils.isValueIsNullOrEmpty(edtDDD.getPhoneNumber())){
             showSnack(getString(R.string.msg_val_ddd));
-            edtDataNascimento.setError(getString(R.string.msg_val_campo_obrigatorio));
+            edtDDD.setError(getString(R.string.msg_val_campo_obrigatorio));
             return;
         }
 
         if(FieldUtils.isValueIsNullOrEmpty(edtNumero.getPhoneNumber())){
             showSnack(getString(R.string.msg_val_telefone));
-            edtDataNascimento.setError(getString(R.string.msg_val_campo_obrigatorio));
+            edtNumero.setError(getString(R.string.msg_val_campo_obrigatorio));
             return;
         }
+        dispositivoModel.nome = edtNomeCompleto.getText().toString();
+        dispositivoModel.dataNacimento = edtDataNascimento.getDate();
+        dispositivoModel.prefixo = edtDDD.getPhoneNumber();
+        dispositivoModel.numero = edtNumero.getPhoneNumber();
 
-
-        startActivity(new Intent(this,AguardeSMSActivity.class));
+        startActivity(new Intent(CadastroActivity.this,AguardeSMSActivity.class));
         finish();
+//
+//        DispositivoBusiness business = new DispositivoBusiness(this);
+//        Observable<DispositivoModel> observable = business.confirmar(dispositivoModel);
+//        prepare(observable)
+//                .subscribe(new Subscriber<DispositivoModel>() {
+//                    @Override
+//                    public void onStart() {
+//                        showProgress();
+//                    }
+//                    @Override
+//                    public void onCompleted() {
+//                        hideProgress();
+//                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        hideProgress();
+//                        e.printStackTrace();
+//                        showSnack(e.getMessage());
+//                    }
+//                    @Override
+//                    public void onNext(DispositivoModel dispositivoModel1) {
+//                        startActivity(new Intent(CadastroActivity.this,AguardeSMSActivity.class));
+//                        finish();
+//                    }
+//                });
+
+
+
     }
 }
