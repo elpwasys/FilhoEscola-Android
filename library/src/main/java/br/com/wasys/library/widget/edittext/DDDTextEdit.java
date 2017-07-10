@@ -26,7 +26,7 @@ public class DDDTextEdit extends MaskedTextEdit {
 	}
 
 	private void initialize() {
-		this.setInputMask("999");
+		this.setInputMask("99");
 		this.setInputType(InputType.TYPE_CLASS_PHONE);
 	}
 

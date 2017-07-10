@@ -3,8 +3,11 @@ package br.com.wasys.library.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.Date;
 
 import br.com.wasys.library.Application;
@@ -54,6 +57,39 @@ public class PreferencesUtils {
                 SharedPreferences.Editor editor = getEditor();
                 editor.putString(key, text);
                 editor.commit();
+            }
+        }
+    }
+
+    public static <T> T getJSON(Class<T> clazz,String key) {
+        if (StringUtils.isNotBlank(key)) {
+            SharedPreferences preferences = getPreferences();
+            String text = preferences.getString(key, null);
+            if (StringUtils.isNotBlank(text)) {
+                try {
+                    return JacksonUtils.getObjectMapper().readValue(text, clazz);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void putJSON(String key, Object value) {
+        if (StringUtils.isNotBlank(key)) {
+            if (value == null) {
+                remove(key);
+            }
+            else {
+                try {
+                    String text = JacksonUtils.getObjectMapper().writeValueAsString(value);
+                    SharedPreferences.Editor editor = getEditor();
+                    editor.putString(key, text);
+                    editor.commit();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

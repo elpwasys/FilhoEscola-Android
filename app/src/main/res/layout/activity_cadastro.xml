@@ -87,7 +87,7 @@
                     android:id="@+id/edt_ddd"
                     android:inputType="phone"
                     android:layout_weight="3"
-                    android:hint="DDD"/>
+                    android:hint="DD"/>
 
                 <br.com.wasys.library.widget.edittext.PhoneTextEdit
                     android:layout_width="match_parent"

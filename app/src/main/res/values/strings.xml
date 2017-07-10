@@ -43,6 +43,7 @@
     <string name="msg_aguarde">Aguarde enquanto confirmamos seu número.</string>
     <string name="msg_ou_digite">Ou digite o código recebido por SMS abaixo:</string>
     <string name="msg_liberar_permissao">É necessario que você libere as permissões</string>
+    <string name="msg_erro_cadastro">Ocorreu um erro ao verificar seu dispositivo efetue o cadastro novamente.</string>
     <string name="title_activity_home">Home</string>
 
     <!-- MSG Validacao -->

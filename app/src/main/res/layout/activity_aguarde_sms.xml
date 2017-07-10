@@ -93,6 +93,16 @@
             android:id="@+id/edt_digito_5"
             android:layout_weight="1" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="1"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:inputType="number"
+            android:id="@+id/edt_digito_6"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <Button

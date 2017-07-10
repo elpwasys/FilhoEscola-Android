@@ -93,7 +93,7 @@ public class HomeActivity extends BaseActivity {
         });
         View header = navigationView.getHeaderView(0);
         TextView tv_email = (TextView)header.findViewById(R.id.tv_email);
-        tv_email.setText("raj.amalw@learn2crack.com");
+        tv_email.setText("Nome Usuario Logado");
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close){
 

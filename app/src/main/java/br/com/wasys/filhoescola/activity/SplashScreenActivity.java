@@ -11,7 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
+import br.com.wasys.filhoescola.adapter.HomePagerAdapter;
+import br.com.wasys.filhoescola.enumeradores.StatusDispositivo;
 import br.com.wasys.library.activity.AppActivity;
 
 public class SplashScreenActivity extends BaseActivity {
@@ -25,6 +28,11 @@ public class SplashScreenActivity extends BaseActivity {
 
         if(!checkedSelfPermission(PHONE)){
             ActivityCompat.requestPermissions(this,PHONE,500);
+            return;
+        }
+        if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
+            startActivity(new Intent(this,HomeActivity.class));
+            finish();
         }else{
             startActivity(new Intent(this,CadastroActivity.class));
             finish();

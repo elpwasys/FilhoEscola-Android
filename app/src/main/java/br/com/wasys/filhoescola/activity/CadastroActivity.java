@@ -42,6 +42,26 @@ public class CadastroActivity extends BaseActivity {
 
         setTitle(R.string.cadastro);
 
+        edtDataNascimento.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 8){
+                    edtDDD.requestFocus();
+                }
+            }
+        });
+
+
         edtDDD.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -55,7 +75,7 @@ public class CadastroActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 3){
+                if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 2){
                     edtNumero.requestFocus();
                 }
             }
@@ -68,7 +88,11 @@ public class CadastroActivity extends BaseActivity {
         final DispositivoModel dispositivoModel = new DispositivoModel();
 
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        dispositivoModel.uuid = telephonyManager.getDeviceId();
+        if(telephonyManager.getDeviceId() == null){
+            dispositivoModel.uuid = "123123123123123";
+        }else {
+            dispositivoModel.uuid = telephonyManager.getDeviceId();
+        }
 
         if(FieldUtils.isValueIsNullOrEmpty(edtNomeCompleto)){
             showSnack(getString(R.string.msg_val_nome));
@@ -94,37 +118,37 @@ public class CadastroActivity extends BaseActivity {
             return;
         }
         dispositivoModel.nome = edtNomeCompleto.getText().toString();
-        dispositivoModel.dataNacimento = edtDataNascimento.getDate();
+        dispositivoModel.dataNascimento = edtDataNascimento.getDate();
         dispositivoModel.prefixo = edtDDD.getPhoneNumber();
         dispositivoModel.numero = edtNumero.getPhoneNumber();
 
-        startActivity(new Intent(CadastroActivity.this,AguardeSMSActivity.class));
-        finish();
-//
-//        DispositivoBusiness business = new DispositivoBusiness(this);
-//        Observable<DispositivoModel> observable = business.confirmar(dispositivoModel);
-//        prepare(observable)
-//                .subscribe(new Subscriber<DispositivoModel>() {
-//                    @Override
-//                    public void onStart() {
-//                        showProgress();
-//                    }
-//                    @Override
-//                    public void onCompleted() {
-//                        hideProgress();
-//                    }
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        hideProgress();
-//                        e.printStackTrace();
-//                        showSnack(e.getMessage());
-//                    }
-//                    @Override
-//                    public void onNext(DispositivoModel dispositivoModel1) {
-//                        startActivity(new Intent(CadastroActivity.this,AguardeSMSActivity.class));
-//                        finish();
-//                    }
-//                });
+        DispositivoBusiness business = new DispositivoBusiness(this);
+        Observable<DispositivoModel> observable = business.confirmar(dispositivoModel);
+        prepare(observable)
+                .subscribe(new Subscriber<DispositivoModel>() {
+                    @Override
+                    public void onStart() {
+                        showProgress();
+                    }
+                    @Override
+                    public void onCompleted() {
+                        hideProgress();
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        hideProgress();
+                        e.printStackTrace();
+                        showSnack(e.getMessage());
+                    }
+                    @Override
+                    public void onNext(DispositivoModel dispositivoModel1) {
+                        Intent intent = new Intent(CadastroActivity.this,AguardeSMSActivity.class);
+                        intent.putExtra("dispositivo",dispositivoModel1);
+                        startActivity(intent);
+                        finish();
+                        FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
+                    }
+                });
 
 
 
