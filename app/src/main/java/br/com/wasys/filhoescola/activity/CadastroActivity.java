@@ -17,6 +17,7 @@ import br.com.wasys.filhoescola.business.DispositivoBusiness;
 import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.library.utils.FieldUtils;
+import br.com.wasys.library.widget.edittext.DDDPhoneTextEdit;
 import br.com.wasys.library.widget.edittext.DDDTextEdit;
 import br.com.wasys.library.widget.edittext.DateTextEdit;
 import br.com.wasys.library.widget.edittext.PhoneTextEdit;
@@ -28,8 +29,7 @@ import rx.Subscriber;
 
 public class CadastroActivity extends BaseActivity {
 
-    @BindView(R.id.edt_ddd) DDDTextEdit edtDDD;
-    @BindView(R.id.edt_numero) PhoneTextEdit edtNumero;
+    @BindView(R.id.edt_numero) DDDPhoneTextEdit edtDDDPhone;
     @BindView(R.id.edt_data_nascimento) DateTextEdit edtDataNascimento;
     @BindView(R.id.edt_nome_completo) EditText edtNomeCompleto;
 
@@ -56,27 +56,7 @@ public class CadastroActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 8){
-                    edtDDD.requestFocus();
-                }
-            }
-        });
-
-
-        edtDDD.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(FieldUtils.removerEspeciaisEspaco(s.toString()).length() == 2){
-                    edtNumero.requestFocus();
+                    edtDDDPhone.requestFocus();
                 }
             }
         });
@@ -106,21 +86,15 @@ public class CadastroActivity extends BaseActivity {
             return;
         }
 
-        if(FieldUtils.isValueIsNullOrEmpty(edtDDD.getPhoneNumber())){
-            showSnack(getString(R.string.msg_val_ddd));
-            edtDDD.setError(getString(R.string.msg_val_campo_obrigatorio));
-            return;
-        }
-
-        if(FieldUtils.isValueIsNullOrEmpty(edtNumero.getPhoneNumber())){
+        if(FieldUtils.isValueIsNullOrEmpty(edtDDDPhone.getPhoneNumber())){
             showSnack(getString(R.string.msg_val_telefone));
-            edtNumero.setError(getString(R.string.msg_val_campo_obrigatorio));
+            edtDDDPhone.setError(getString(R.string.msg_val_campo_obrigatorio));
             return;
         }
         dispositivoModel.nome = edtNomeCompleto.getText().toString();
         dispositivoModel.dataNascimento = edtDataNascimento.getDate();
-        dispositivoModel.prefixo = edtDDD.getPhoneNumber();
-        dispositivoModel.numero = edtNumero.getPhoneNumber();
+        dispositivoModel.prefixo = edtDDDPhone.getPhoneNumber().substring(0,2);
+        dispositivoModel.numero = edtDDDPhone.getPhoneNumber().substring(2);
 
         DispositivoBusiness business = new DispositivoBusiness(this);
         Observable<DispositivoModel> observable = business.confirmar(dispositivoModel);
