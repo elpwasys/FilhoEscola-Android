@@ -3,19 +3,11 @@ package br.com.wasys.filhoescola.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.adapter.HomePagerAdapter;
 import br.com.wasys.filhoescola.enumeradores.StatusDispositivo;
-import br.com.wasys.library.activity.AppActivity;
 
 public class SplashScreenActivity extends BaseActivity {
 
@@ -31,7 +23,7 @@ public class SplashScreenActivity extends BaseActivity {
             return;
         }
         if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
-            startActivity(new Intent(this,HomeActivity.class));
+            startActivity(new Intent(this,WebActivity.class));
             finish();
         }else{
             startActivity(new Intent(this,CadastroActivity.class));

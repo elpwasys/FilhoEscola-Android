@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="br.com.wasys.filhoescola.activity.HomeActivity">
+    tools:context="br.com.wasys.filhoescola.activity.MensagensActivity">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home"
@@ -17,6 +17,11 @@
             android:id="@+id/item_configurar"
             android:title="@string/configurar"
             android:icon="@mipmap/ico_configuracao"/>
+
+        <item
+            android:id="@+id/item_mensagem"
+            android:title="@string/mensagem"
+            android:icon="@mipmap/ico_mensagem"/>
 
         <item
             android:id="@+id/item_ajuda"

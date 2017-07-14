@@ -1,10 +1,10 @@
 package br.com.wasys.filhoescola.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.webkit.WebView;
 import android.widget.EditText;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
@@ -172,7 +172,7 @@ public class AguardeSMSActivity extends BaseActivity {
                     }
                     @Override
                     public void onNext(DispositivoModel dispositivoModel1) {
-                        startActivity(new Intent(AguardeSMSActivity.this,HomeActivity.class));
+                        startActivity(new Intent(AguardeSMSActivity.this,WebActivity.class));
                         finish();
                         FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
                     }

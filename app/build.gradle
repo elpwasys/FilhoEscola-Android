@@ -20,8 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            buildConfigField 'String', 'BASE_URL', "\"http://mlife02.wasys.com.br:8080/filhoescola/rest/\""
-            //buildConfigField 'String', 'BASE_URL', "\"http://192.168.100.12:8080/self/mb/\""
+            buildConfigField 'String', 'BASE_URL', "\"http://mlife02.wasys.com.br:8080/filhoescola/\""
+            buildConfigField 'String', 'BASE_CONTEXT_MOBILE', "\"mobile/\""
+            buildConfigField 'String', 'BASE_CONTEXT_REST', "\"rest/\""
+            buildConfigField 'String', 'BASE_CONTEXT_FILE', "\"file/\""
         }
     }
     packagingOptions {
