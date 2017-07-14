@@ -2,6 +2,8 @@ package br.com.wasys.filhoescola.realm;
 
 import java.util.Date;
 
+import br.com.wasys.filhoescola.model.ImagemModel;
+import br.com.wasys.filhoescola.model.MensagemModel;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -19,6 +21,15 @@ public class Mensagem extends RealmObject {
     private String botaoTexto;
     private Escola escola;
     private Funcionario funcionario;
+
+    public void createFrom(MensagemModel mensagemModel){
+        this.id = mensagemModel.id;
+        this.data = mensagemModel.data;
+        this.assunto = mensagemModel.assunto.toString();
+        this.conteudo = mensagemModel.conteudo;
+        this.botaoLink = mensagemModel.botaoLink;
+        this.botaoTexto = mensagemModel.botaoTexto;
+    }
 
     public Long getId() {
         return id;

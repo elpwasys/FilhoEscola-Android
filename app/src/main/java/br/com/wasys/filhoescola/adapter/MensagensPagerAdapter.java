@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.activity.HomeActivity;
 import br.com.wasys.filhoescola.enumeradores.TipoVisualizacao;
 import br.com.wasys.filhoescola.fragment.VisualizacaoFragment;
 
@@ -14,11 +13,11 @@ import br.com.wasys.filhoescola.fragment.VisualizacaoFragment;
  * Created by bruno on 04/07/17.
  */
 
-public class HomePagerAdapter extends FragmentPagerAdapter {
+public class MensagensPagerAdapter extends FragmentPagerAdapter {
 
     public Context context;
 
-    public HomePagerAdapter(Context context,FragmentManager fm) {
+    public MensagensPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.context = context;
     }

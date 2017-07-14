@@ -1,5 +1,8 @@
 package br.com.wasys.filhoescola.realm;
 
+import br.com.wasys.filhoescola.model.EscolaModel;
+import br.com.wasys.filhoescola.model.FuncionarioModel;
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -17,6 +20,13 @@ public class Funcionario extends RealmObject {
     private String email;
     private Escola escola;
     private RealmList<Mensagem> mensagens;
+
+    public void createFrom(FuncionarioModel funcionarioModel){
+        this.id = funcionarioModel.id;
+        this.nome = funcionarioModel.nome;
+        this.tipo = funcionarioModel.tipo.toString();
+        this.email = funcionarioModel.email;
+    }
 
     public Long getId() {
         return id;

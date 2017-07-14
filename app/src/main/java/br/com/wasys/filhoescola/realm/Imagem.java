@@ -1,5 +1,6 @@
 package br.com.wasys.filhoescola.realm;
 
+import br.com.wasys.filhoescola.model.ImagemModel;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -12,6 +13,12 @@ public class Imagem extends RealmObject {
     @PrimaryKey
     private Long id;
     private String caminho;
+
+
+    public void createFrom(ImagemModel imagemModel){
+        this.id = imagemModel.id;
+        this.caminho = imagemModel.caminho;
+    }
 
     public Long getId() {
         return id;

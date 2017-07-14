@@ -1,5 +1,7 @@
 package br.com.wasys.filhoescola.realm;
 
+import br.com.wasys.filhoescola.model.EscolaModel;
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -16,6 +18,14 @@ public class Escola extends RealmObject {
     private RealmList<Aluno> alunos;
     private RealmList<Mensagem> mensagens;
     private RealmList<Funcionario> funcionarios;
+
+
+    public void createFrom(Realm realm,EscolaModel escolaModel){
+        this.id = escolaModel.id;
+        this.nome = escolaModel.nome;
+        this.imagem = realm.createObject(Imagem.class);
+        this.imagem.createFrom(escolaModel.imagem);
+    }
 
     public Long getId() {
         return id;

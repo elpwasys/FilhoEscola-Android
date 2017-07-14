@@ -3,62 +3,47 @@ package br.com.wasys.filhoescola.activity;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.TextView;
 
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.adapter.HomePagerAdapter;
+import br.com.wasys.filhoescola.adapter.MensagensPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity {
+public class MensagensActivity extends BaseActivity {
 
 
-    private HomePagerAdapter homePagerAdapter;
+    private MensagensPagerAdapter mensagensPagerAdapter;
 
     @BindView(R.id.viewPager) ViewPager viewPager;
     @BindView(R.id.tabs) TabLayout tabLayout;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.navigation_view) NavigationView navigationView;
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_mensagem);
 
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        homePagerAdapter = new HomePagerAdapter(getBaseContext(),getSupportFragmentManager());
+        mensagensPagerAdapter = new MensagensPagerAdapter(getBaseContext(),getSupportFragmentManager());
 
-        viewPager.setAdapter(homePagerAdapter);
+        viewPager.setAdapter(mensagensPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         initNavigationDrawer();
 
     }
@@ -72,19 +57,21 @@ public class HomeActivity extends BaseActivity {
 
                 switch (id){
                     case R.id.home:
-                       showSnack(getString(R.string.inicio));
+                       home();
                         break;
                     case R.id.item_meu_cadastro:
-                        showSnack(getString(R.string.meu_cadastro));
+                        meuCadastro();
                         break;
                     case R.id.item_configurar:
-                        showSnack(getString(R.string.configurar));
+                        configurar();
                         break;
                     case R.id.item_ajuda:
-                        showSnack(getString(R.string.ajuda));
+                        ajuda();
+                        break;
+                    case R.id.item_mensagem:
                         break;
                     case R.id.item_sair:
-                        finish();
+                        sair();
                         break;
                 }
                 drawerLayout.closeDrawers();

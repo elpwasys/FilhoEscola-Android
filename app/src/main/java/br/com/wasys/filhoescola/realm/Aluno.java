@@ -2,6 +2,7 @@ package br.com.wasys.filhoescola.realm;
 
 import java.util.Date;
 
+import br.com.wasys.filhoescola.model.AlunoModel;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -20,6 +21,12 @@ public class Aluno extends RealmObject {
     private Escola escola;
     private RealmList<Mensagem> mensagens;
 
+    public void createFrom(AlunoModel alunoModel){
+        this.id = alunoModel.id;
+        this.nome = alunoModel.nome;
+        this.nomeMae = alunoModel.nomeMae;
+        this.dataNascimento = alunoModel.dataNascimento;
+    }
     public Long getId() {
         return id;
     }
