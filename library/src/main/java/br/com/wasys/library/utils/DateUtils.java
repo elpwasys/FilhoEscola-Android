@@ -237,4 +237,34 @@ public class DateUtils {
         calendar.add(Calendar.HOUR_OF_DAY, hour);
         return calendar.getTime();
     }
+
+    public static Date getWeekMinDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMinimum(Calendar.DAY_OF_WEEK));
+        truncate(cal);
+        return cal.getTime();
+    }
+
+    public static Date getWeekMaxDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        truncate(cal);
+        return cal.getTime();
+    }
+
+    public static Date getWeekMinDay(Date day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMinimum(Calendar.DAY_OF_WEEK));
+        truncate(cal);
+        return cal.getTime();
+    }
+
+    public static Date getWeekMaxDay(Date day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        truncate(cal);
+        return cal.getTime();
+    }
 }
