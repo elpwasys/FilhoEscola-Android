@@ -172,8 +172,8 @@ public class AguardeSMSActivity extends BaseActivity {
                     }
                     @Override
                     public void onNext(DispositivoModel dispositivoModel1) {
-                        startActivity(new Intent(AguardeSMSActivity.this,WebActivity.class));
-                        finish();
+                        home();
+                        FilhoNaEscolaApplication.setAuthorization(dispositivoModel1.token);
                         FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
                     }
                 });

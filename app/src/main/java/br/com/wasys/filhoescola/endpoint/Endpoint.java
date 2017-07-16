@@ -27,6 +27,18 @@ public class Endpoint {
     public static final String BASE_URL = BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_REST;
 
     public static <T> T create(Class<T> clazz) {
+        return br.com.wasys.library.http.Endpoint.create(clazz, BASE_URL, getHeaders());
+    }
+
+    public static <T> T execute(Call<T> call) throws EndpointException {
+        Context context = FilhoNaEscolaApplication.getContext();
+        if (!AndroidUtils.isNetworkAvailable(context)) {
+            Error error = new Error(HttpStatus.NOT_APPLY, context.getString(R.string.network_not_available));
+            throw new EndpointException(error);
+        }
+        return br.com.wasys.library.http.Endpoint.execute(call);
+    }
+    public static Map<String, String> getHeaders(){
         Context context = FilhoNaEscolaApplication.getContext();
         Map<String, String> headers = new HashMap<>();
         headers.put(DeviceHeader.DEVICE_SO.key, "Android");
@@ -40,15 +52,6 @@ public class Endpoint {
         if (StringUtils.isNotBlank(authorization)) {
             headers.put(DeviceHeader.AUTHORIZATION.key, authorization);
         }
-        return br.com.wasys.library.http.Endpoint.create(clazz, BASE_URL, headers);
-    }
-
-    public static <T> T execute(Call<T> call) throws EndpointException {
-        Context context = FilhoNaEscolaApplication.getContext();
-        if (!AndroidUtils.isNetworkAvailable(context)) {
-            Error error = new Error(HttpStatus.NOT_APPLY, context.getString(R.string.network_not_available));
-            throw new EndpointException(error);
-        }
-        return br.com.wasys.library.http.Endpoint.execute(call);
+        return headers;
     }
 }

@@ -3,6 +3,7 @@
 
     <!-- A -->
     <string name="ajuda">Ajuda</string>
+    <string name="atividade">Atividade</string>
 
     <!-- C -->
     <string name="cadastro">Cadastro</string>
@@ -18,6 +19,7 @@
 
     <!-- E -->
     <string name="enviar">Enviar</string>
+    <string name="escola">Escola</string>
 
     <!-- I -->
     <string name="inicio">Início</string>
@@ -26,6 +28,7 @@
     <string name="mensal">Mensal</string>
     <string name="meu_cadastro">Meu Cadastro</string>
     <string name="mensagem">Mensagem</string>
+    <string name="mensagens">Mensagens</string>
 
     <!-- N -->
     <string name="nome_completo">Nome Completo</string>
@@ -33,6 +36,9 @@
 
     <!-- O -->
     <string name="open">Open</string>
+
+    <!-- P -->
+    <string name="professor">Professor</string>
 
     <!-- S -->
     <string name="semanal">Semanal</string>
@@ -45,7 +51,7 @@
     <string name="msg_ou_digite">Ou digite o código recebido por SMS abaixo:</string>
     <string name="msg_liberar_permissao">É necessario que você libere as permissões</string>
     <string name="msg_erro_cadastro">Ocorreu um erro ao verificar seu dispositivo efetue o cadastro novamente.</string>
-    <string name="title_activity_home">Home</string>
+    <string name="msg_nao_mensagens">Não há mensagens.</string>
 
     <!-- MSG Validacao -->
     <string name="msg_val_nome">Campo de nome completo em branco</string>

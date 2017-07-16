@@ -23,8 +23,7 @@ public class SplashScreenActivity extends BaseActivity {
             return;
         }
         if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
-            startActivity(new Intent(this,WebActivity.class));
-            finish();
+            home();
         }else{
             startActivity(new Intent(this,CadastroActivity.class));
             finish();

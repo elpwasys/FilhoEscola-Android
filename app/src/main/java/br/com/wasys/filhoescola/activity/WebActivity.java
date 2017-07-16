@@ -15,6 +15,10 @@ import android.widget.TextView;
 
 import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.R;
+import br.com.wasys.filhoescola.endpoint.Endpoint;
+import br.com.wasys.filhoescola.enumeradores.TipoFuncionario;
+import br.com.wasys.filhoescola.enumeradores.TipoPagina;
+import br.com.wasys.filhoescola.utils.WebViewClient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,11 +39,35 @@ public class WebActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
-        webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
-
+        webView.setWebViewClient(new WebViewClient(getApplicationContext()));
         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.setVerticalScrollBarEnabled(true);
+        webView.setScrollbarFadingEnabled(true);
+        webView.setVerticalScrollbarOverlay(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(false);
+        webView.getSettings().setSaveFormData(false);
 
+        TipoPagina tipo = (TipoPagina) getIntent().getSerializableExtra("tipo");
+
+        switch (tipo){
+            case INICIO:
+                webView.loadUrl(BASE_URL+"aluno/inicio.xhtml");
+                break;
+            case MEUCADASTRO:
+                webView.loadUrl(BASE_URL+"aluno/meucadastro.xhtml");
+                break;
+            case CONFIGURAR:
+                webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
+                break;
+            case AJUDA:
+                webView.loadUrl(BASE_URL+"aluno/ajuda.xhtml");
+                break;
+            default:
+                webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
+        }
         initNavigationDrawer();
     }
     public void initNavigationDrawer() {

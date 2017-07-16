@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import br.com.wasys.filhoescola.R;
+import br.com.wasys.filhoescola.enumeradores.TipoPagina;
 import br.com.wasys.library.activity.AppActivity;
 
 /**
@@ -13,7 +14,7 @@ import br.com.wasys.library.activity.AppActivity;
 
 public class BaseActivity extends AppActivity {
 
-    protected void showSnack(String mensagem){
+    public void showSnack(String mensagem){
 
         Snackbar.make(findViewById(android.R.id.content),mensagem, Snackbar.LENGTH_LONG)
                 .setAction("Ok", new View.OnClickListener() {
@@ -24,23 +25,30 @@ public class BaseActivity extends AppActivity {
                 }).show();
     }
 
-    protected void home(){
-        showSnack(getString(R.string.inicio));
+    public void home(){
+        openWeb(TipoPagina.INICIO);
     }
-    protected void meuCadastro(){
-        showSnack(getString(R.string.meu_cadastro));
+    public void meuCadastro(){
+        openWeb(TipoPagina.MEUCADASTRO);
     }
-    protected void mensagem(){
+    public void mensagem(){
         startActivity(new Intent(this,MensagensActivity.class));
         finish();
     }
-    protected void configurar(){
-        showSnack(getString(R.string.configurar));
+    public void configurar(){
+        openWeb(TipoPagina.CONFIGURAR);
     }
-    protected void ajuda(){
-        showSnack(getString(R.string.ajuda));
+    public void ajuda(){
+        openWeb(TipoPagina.AJUDA);
     }
-    protected void sair(){
+    public void sair(){
+        finish();
+    }
+
+    public void openWeb(TipoPagina tipoPagina){
+        Intent intent = new Intent(this,WebActivity.class);
+        intent.putExtra("tipo", tipoPagina);
+        startActivity(intent);
         finish();
     }
 }
