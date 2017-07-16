@@ -15,6 +15,6 @@ import retrofit2.http.Path;
  */
 public interface MensagemEndpoint {
 
-    @POST("mensagem/busca")
+    @POST("mensagem/buscar")
     Call<List<MensagemModel>> buscar();
 }

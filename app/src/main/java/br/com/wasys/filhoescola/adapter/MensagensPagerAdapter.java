@@ -24,7 +24,7 @@ public class MensagensPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (TipoVisualizacao.getTipo(position)){
+        switch (TipoVisualizacao.getTipo(position+1)){
             case DIARIA:
                 return VisualizacaoFragment.newInstance(TipoVisualizacao.DIARIA);
             case SEMANAL:

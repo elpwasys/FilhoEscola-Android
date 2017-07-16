@@ -75,7 +75,7 @@ public abstract class AppActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    protected void showProgress() {
+    public void showProgress() {
         if (mProgress == null) {
             mProgress = new Progress(this);
         }
@@ -83,14 +83,14 @@ public abstract class AppActivity extends AppCompatActivity {
         mProgress.show();
     }
 
-    protected void hideProgress() {
+    public void hideProgress() {
         if (mProgress != null && mProgress.isShowing()) {
             Log.i(getTag(), "Hiding progress...");
             mProgress.dismiss();
         }
     }
 
-    protected Observable prepare(Observable observable) {
+    public Observable prepare(Observable observable) {
         return observable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.from(getLooper()));

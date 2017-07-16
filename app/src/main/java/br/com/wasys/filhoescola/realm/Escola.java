@@ -21,10 +21,11 @@ public class Escola extends RealmObject {
 
 
     public void createFrom(Realm realm,EscolaModel escolaModel){
-        this.id = escolaModel.id;
         this.nome = escolaModel.nome;
-        this.imagem = realm.createObject(Imagem.class);
-        this.imagem.createFrom(escolaModel.imagem);
+        if(escolaModel.imagem != null) {
+            this.imagem = realm.createObject(Imagem.class, escolaModel.imagem.id);
+            this.imagem.createFrom(escolaModel.imagem);
+        }
     }
 
     public Long getId() {

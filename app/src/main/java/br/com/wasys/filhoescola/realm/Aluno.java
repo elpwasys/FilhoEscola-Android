@@ -22,7 +22,6 @@ public class Aluno extends RealmObject {
     private RealmList<Mensagem> mensagens;
 
     public void createFrom(AlunoModel alunoModel){
-        this.id = alunoModel.id;
         this.nome = alunoModel.nome;
         this.nomeMae = alunoModel.nomeMae;
         this.dataNascimento = alunoModel.dataNascimento;

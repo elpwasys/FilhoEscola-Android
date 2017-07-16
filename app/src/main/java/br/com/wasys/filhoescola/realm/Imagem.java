@@ -16,7 +16,6 @@ public class Imagem extends RealmObject {
 
 
     public void createFrom(ImagemModel imagemModel){
-        this.id = imagemModel.id;
         this.caminho = imagemModel.caminho;
     }
 

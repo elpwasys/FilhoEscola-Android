@@ -21,9 +21,9 @@ public class Mensagem extends RealmObject {
     private String botaoTexto;
     private Escola escola;
     private Funcionario funcionario;
+    private Aluno aluno;
 
     public void createFrom(MensagemModel mensagemModel){
-        this.id = mensagemModel.id;
         this.data = mensagemModel.data;
         this.assunto = mensagemModel.assunto.toString();
         this.conteudo = mensagemModel.conteudo;
@@ -93,5 +93,13 @@ public class Mensagem extends RealmObject {
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
     }
 }

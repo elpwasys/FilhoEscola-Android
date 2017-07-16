@@ -22,7 +22,6 @@ public class Funcionario extends RealmObject {
     private RealmList<Mensagem> mensagens;
 
     public void createFrom(FuncionarioModel funcionarioModel){
-        this.id = funcionarioModel.id;
         this.nome = funcionarioModel.nome;
         this.tipo = funcionarioModel.tipo.toString();
         this.email = funcionarioModel.email;

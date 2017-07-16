@@ -247,7 +247,7 @@ public class DateUtils {
 
     public static Date getWeekMaxDay() {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
         truncate(cal);
         return cal.getTime();
     }

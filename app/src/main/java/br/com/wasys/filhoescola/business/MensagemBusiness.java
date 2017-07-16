@@ -34,48 +34,67 @@ public class MensagemBusiness extends Business {
         super(context);
     }
 
-    public Observable<RealmResults<Mensagem>> diaria() {
-        return Observable.create(new BuscaMensagemHandler(TipoVisualizacao.DIARIA,true));
+    public Observable<Boolean> buscar() {
+        return Observable.create(new BuscaMensagemHandler());
     }
 
-    public Observable<RealmResults<Mensagem>> semanal() {
-        return Observable.create(new BuscaMensagemHandler(TipoVisualizacao.SEMANAL,false));
-    }
+    private class BuscaMensagemHandler implements Observable.OnSubscribe<Boolean> {
 
-    public Observable<RealmResults<Mensagem>> mensal() {
-        return Observable.create(new BuscaMensagemHandler(TipoVisualizacao.MENSAL,false));
-    }
 
-    private class BuscaMensagemHandler implements Observable.OnSubscribe<RealmResults<Mensagem>> {
-        private TipoVisualizacao tipo;
-        private boolean sincroniza;
-
-        public BuscaMensagemHandler(TipoVisualizacao tipo,boolean sincroniza) {
-            this.tipo = tipo;
-            this.sincroniza = sincroniza;
+        public BuscaMensagemHandler() {
         }
         @Override
-        public void call(Subscriber<? super RealmResults<Mensagem>> subscriber) {
+        public void call(Subscriber<? super Boolean> subscriber) {
             try {
-                if(sincroniza){
-                    sincronizar();
+                MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
+                Call<List<MensagemModel>> call = endpoint.buscar();
+                List<MensagemModel> models = Endpoint.execute(call);
+                Realm realm = Realm.getDefaultInstance();
+                for (MensagemModel model : models) {
+                    realm.beginTransaction();
+                    Aluno aluno = realm.where(Aluno.class).equalTo("id",model.aluno.id).findFirst();
+                    if(aluno == null){
+                        aluno = realm.createObject(Aluno.class,model.aluno.id);
+                        aluno.createFrom(model.aluno);
+                    }
+                    Escola escola = realm.where(Escola.class).equalTo("id",model.escola.id).findFirst();
+                    if(escola == null){
+                        escola = realm.createObject(Escola.class,model.escola.id);
+                        escola.createFrom(realm,model.escola);
+                    }
+                    Funcionario funcionario = realm.where(Funcionario.class).equalTo("id",model.funcionario.id).findFirst();
+                    if(funcionario == null){
+                        funcionario = realm.createObject(Funcionario.class,model.funcionario.id);
+                        funcionario.createFrom(model.funcionario);
+                    }
+                    Mensagem mensagem  = realm.where(Mensagem.class).equalTo("id",model.id).findFirst();
+                    if(mensagem == null){
+                        mensagem = realm.createObject(Mensagem.class,model.id);
+                        mensagem.createFrom(model);
+                    }
+
+                    mensagem.setEscola(escola);
+                    mensagem.setFuncionario(funcionario);
+                    mensagem.setAluno(aluno);
+
+                    aluno.setEscola(escola);
+                    aluno.getMensagens().add(mensagem);
+
+                    funcionario.setEscola(escola);
+                    funcionario.getMensagens().add(mensagem);
+
+                    escola.getMensagens().add(mensagem);
+
+                    if(!escola.getAlunos().contains(aluno)){
+                        escola.getAlunos().add(aluno);
+                    }
+
+                    if(!escola.getFuncionarios().contains(funcionario)){
+                        escola.getFuncionarios().add(funcionario);
+                    }
+                    realm.commitTransaction();
                 }
-                RealmResults<Mensagem> mensagens = null;
-                switch (tipo){
-                    case DIARIA:{
-                        mensagens = Realm.getDefaultInstance().where(Mensagem.class).between("data", DateUtils.getFirstTimeOfDay(), DateUtils.getLastTimeOfDay()).findAll();
-                        break;
-                    }
-                    case SEMANAL:{
-                        mensagens = Realm.getDefaultInstance().where(Mensagem.class).between("data", DateUtils.getWeekMinDay(), DateUtils.getWeekMaxDay()).findAll();
-                        break;
-                    }
-                    case MENSAL:{
-                        mensagens = Realm.getDefaultInstance().where(Mensagem.class).between("data", DateUtils.getActualMinDay(), DateUtils.getActualMaxDay()).findAll();
-                        break;
-                    }
-                }
-                subscriber.onNext(mensagens);
+                subscriber.onNext(true);
                 subscriber.onCompleted();
             } catch (Throwable e) {
                 subscriber.onError(e);
@@ -83,52 +102,4 @@ public class MensagemBusiness extends Business {
             }
         }
     }
-
-   public void sincronizar() throws Exception{
-       MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
-       Call<List<MensagemModel>> call = endpoint.buscar();
-       List<MensagemModel> models = Endpoint.execute(call);
-       Realm realm = Realm.getDefaultInstance();
-       for (MensagemModel model : models) {
-           realm.beginTransaction();
-           Aluno aluno = realm.where(Aluno.class).equalTo("id",model.aluno.id).findFirst();
-           if(aluno == null){
-               aluno = realm.createObject(Aluno.class);
-               aluno.createFrom(model.aluno);
-           }
-           Escola escola = realm.where(Escola.class).equalTo("id",model.escola.id).findFirst();
-           if(escola == null){
-               escola = realm.createObject(Escola.class);
-               escola.createFrom(realm,model.escola);
-           }
-           Funcionario funcionario = realm.where(Funcionario.class).equalTo("id",model.funcionario.id).findFirst();
-           if(funcionario == null){
-               funcionario = realm.createObject(Funcionario.class);
-               funcionario.createFrom(model.funcionario);
-           }
-
-           Mensagem mensagem = realm.createObject(Mensagem.class);
-           mensagem.createFrom(model);
-
-           mensagem.setEscola(escola);
-           mensagem.setFuncionario(funcionario);
-
-           aluno.setEscola(escola);
-           aluno.getMensagens().add(mensagem);
-
-           funcionario.setEscola(escola);
-           funcionario.getMensagens().add(mensagem);
-
-           escola.getMensagens().add(mensagem);
-
-           if(!escola.getAlunos().contains(aluno)){
-               escola.getAlunos().add(aluno);
-           }
-
-           if(!escola.getFuncionarios().contains(funcionario)){
-               escola.getFuncionarios().add(funcionario);
-           }
-           realm.commitTransaction();
-       }
-   }
 }
