@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ public class WebActivity extends BaseActivity {
 
     public static final String BASE_URL = BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_MOBILE;
 
+    private TipoPagina tipo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,24 +52,40 @@ public class WebActivity extends BaseActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(false);
         webView.getSettings().setSaveFormData(false);
+        webView.getSettings().setBuiltInZoomControls(false);
+        webView.getSettings().setDisplayZoomControls(false);
 
-        TipoPagina tipo = (TipoPagina) getIntent().getSerializableExtra("tipo");
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                if(progress == 100)
+                    hideProgress();
+                else
+                    showProgress();
+            }
+        });
+
+        tipo = (TipoPagina) getIntent().getSerializableExtra("tipo");
 
         switch (tipo){
             case INICIO:
+                setTitle(R.string.inicio);
                 webView.loadUrl(BASE_URL+"aluno/inicio.xhtml");
                 break;
             case MEUCADASTRO:
+                setTitle(R.string.meu_cadastro);
                 webView.loadUrl(BASE_URL+"aluno/meucadastro.xhtml");
                 break;
             case CONFIGURAR:
+                setTitle(R.string.configurar);
                 webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
                 break;
             case AJUDA:
+                setTitle(R.string.ajuda);
                 webView.loadUrl(BASE_URL+"aluno/ajuda.xhtml");
                 break;
             default:
-                webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
+                setTitle(R.string.inicio);
+                webView.loadUrl(BASE_URL+"aluno/inicio.xhtml");
         }
         initNavigationDrawer();
     }
@@ -79,19 +98,23 @@ public class WebActivity extends BaseActivity {
 
                 switch (id){
                     case R.id.home:
-                        home();
+                        if(tipo != TipoPagina.INICIO)
+                            home();
                         break;
                     case R.id.item_meu_cadastro:
-                        meuCadastro();
+                        if(tipo != TipoPagina.MEUCADASTRO)
+                            meuCadastro();
                         break;
                     case R.id.item_configurar:
-                        configurar();
+                        if(tipo != TipoPagina.CONFIGURAR)
+                            configurar();
                         break;
                     case R.id.item_mensagem:
                         mensagem();
                         break;
                     case R.id.item_ajuda:
-                        ajuda();
+                        if(tipo != TipoPagina.AJUDA)
+                            ajuda();
                         break;
                     case R.id.item_sair:
                         sair();

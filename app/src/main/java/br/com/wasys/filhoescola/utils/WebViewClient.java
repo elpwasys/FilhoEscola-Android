@@ -41,7 +41,7 @@ public class WebViewClient extends android.webkit.WebViewClient {
                     .addHeader(DeviceHeader.DEVICE_WIDTH.key, String.valueOf(AndroidUtils.getWidthPixels(context)))
                     .addHeader(DeviceHeader.DEVICE_HEIGHT.key, String.valueOf(AndroidUtils.getHeightPixels(context)))
                     .addHeader(DeviceHeader.DEVICE_APP_VERSION.key, String.valueOf(AndroidUtils.getVersionCode(context)))
-                    .addHeader(DeviceHeader.AUTHORIZATION.key, FilhoNaEscolaApplication.getAuthorization())
+                    .addHeader(DeviceHeader.DEVICE_TOKEN.key, FilhoNaEscolaApplication.getAuthorization())
                     .build();
             Response response = httpClient.newCall(request).execute();
             return new WebResourceResponse(
@@ -70,8 +70,6 @@ public class WebViewClient extends android.webkit.WebViewClient {
                 return "application/vnd.ms-fontobject";
             } else if (extension.equals("svg")) {
                 return "image/svg+xml";
-            }else if (extension.equals("xhtml")){
-                return "application/html";
             }
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }

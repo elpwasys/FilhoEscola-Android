@@ -15,6 +15,7 @@ public enum DeviceHeader {
 	DEVICE_HEIGHT ("Device-Height"),
 	DEVICE_SO_VERSION ("Device-SO-Version"),
 	DEVICE_APP_VERSION ("Device-App-Version"),
+	DEVICE_TOKEN("Device-Token"),
 	AUTHORIZATION ("Authorization");
 	public String key;
 	DeviceHeader(String key) {
