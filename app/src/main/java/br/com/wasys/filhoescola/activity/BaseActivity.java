@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
 import br.com.wasys.library.activity.AppActivity;
@@ -42,6 +43,8 @@ public class BaseActivity extends AppActivity {
         openWeb(TipoPagina.AJUDA);
     }
     public void sair(){
+        FilhoNaEscolaApplication.setDispositivoLogado(null);
+        startActivity(new Intent(this,CadastroActivity.class));
         finish();
     }
 

@@ -14,6 +14,7 @@ import android.view.View;
 
 import android.widget.TextView;
 
+import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.adapter.MensagensPagerAdapter;
 import butterknife.BindView;
@@ -80,7 +81,7 @@ public class MensagensActivity extends BaseActivity {
         });
         View header = navigationView.getHeaderView(0);
         TextView tv_email = (TextView)header.findViewById(R.id.tv_email);
-        tv_email.setText("Nome Usuario Logado");
+        tv_email.setText(FilhoNaEscolaApplication.getDispositivoLogado().nome);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close){
 
