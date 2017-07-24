@@ -22,6 +22,11 @@ public class SplashScreenActivity extends BaseActivity {
             ActivityCompat.requestPermissions(this,PHONE,500);
             return;
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
             home();
         }else{
