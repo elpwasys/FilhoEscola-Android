@@ -74,7 +74,7 @@ public class WebActivity extends BaseActivity {
                 break;
             case MEUCADASTRO:
                 setTitle(R.string.meu_cadastro);
-                webView.loadUrl(BASE_URL+"aluno/meucadastro.xhtml");
+                webView.loadUrl(BASE_URL+"meu-cadastro.xhtml");
                 break;
             case CONFIGURAR:
                 setTitle(R.string.configurar);
@@ -82,7 +82,7 @@ public class WebActivity extends BaseActivity {
                 break;
             case AJUDA:
                 setTitle(R.string.ajuda);
-                webView.loadUrl(BASE_URL+"aluno/ajuda.xhtml");
+                webView.loadUrl(BASE_URL+"ajuda.xhtml");
                 break;
             default:
                 setTitle(R.string.inicio);
