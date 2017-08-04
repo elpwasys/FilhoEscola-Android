@@ -79,13 +79,11 @@ public abstract class AppActivity extends AppCompatActivity {
         if (mProgress == null) {
             mProgress = new Progress(this);
         }
-        Log.i(getTag(), "Showing progress...");
         mProgress.show();
     }
 
     public void hideProgress() {
         if (mProgress != null && mProgress.isShowing()) {
-            Log.i(getTag(), "Hiding progress...");
             mProgress.dismiss();
         }
     }

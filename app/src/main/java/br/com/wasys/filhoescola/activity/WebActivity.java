@@ -1,5 +1,13 @@
 package br.com.wasys.filhoescola.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -7,12 +15,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import com.fasterxml.jackson.databind.deser.Deserializers;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
@@ -20,6 +42,7 @@ import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.endpoint.Endpoint;
 import br.com.wasys.filhoescola.enumeradores.TipoFuncionario;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
+import br.com.wasys.filhoescola.utils.ImagePicker;
 import br.com.wasys.filhoescola.utils.WebViewClient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +66,8 @@ public class WebActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        webView.setWebViewClient(new WebViewClient(getApplicationContext()));
-        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
         webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setVerticalScrollBarEnabled(true);
         webView.setScrollbarFadingEnabled(true);
@@ -55,37 +78,39 @@ public class WebActivity extends BaseActivity {
         webView.getSettings().setSaveFormData(false);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(false);
+        webView.addJavascriptInterface(new WebAppInterface(this), "android");
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
-                if(progress == 100)
-                    hideProgress();
-                else
-                    showProgress();
+//                if(progress == 100)
+//                    hideProgress();
+//                else
+//                    showProgress();
+            }
+            public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+                Log.d("MyApplication", message + " -- From line "
+                        + lineNumber + " of "
+                        + sourceID);
             }
         });
+        webView.setWebViewClient(new WebViewClient(getApplicationContext()));
 
         tipo = (TipoPagina) getIntent().getSerializableExtra("tipo");
 
         switch (tipo){
             case INICIO:
-                setTitle(R.string.inicio);
                 webView.loadUrl(BASE_URL+"aluno/inicio.xhtml");
                 break;
             case MEUCADASTRO:
-                setTitle(R.string.meu_cadastro);
                 webView.loadUrl(BASE_URL+"meu-cadastro.xhtml");
                 break;
             case CONFIGURAR:
-                setTitle(R.string.configurar);
                 webView.loadUrl(BASE_URL+"aluno/configuracao.xhtml");
                 break;
             case AJUDA:
-                setTitle(R.string.ajuda);
                 webView.loadUrl(BASE_URL+"ajuda.xhtml");
                 break;
             default:
-                setTitle(R.string.inicio);
                 webView.loadUrl(BASE_URL+"aluno/inicio.xhtml");
         }
         initNavigationDrawer();
@@ -117,6 +142,9 @@ public class WebActivity extends BaseActivity {
                         if(tipo != TipoPagina.AJUDA)
                             ajuda();
                         break;
+                    case R.id.item_limpar:
+                        limparCache();
+                        break;
                     case R.id.item_sair:
                         sair();
                         break;
@@ -143,5 +171,114 @@ public class WebActivity extends BaseActivity {
         };
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch(requestCode) {
+            case 234:
+                final Bitmap file = ImagePicker.getImageFromResult(this, resultCode, imageReturnedIntent);
+                showProgress();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final String retorno = uploadImage(file);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(retorno);
+                                        hideProgress();
+                                        webView.loadUrl("javascript:Device.onUpload(JSON.parse('" + jsonObject.toString() + "'))");
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                break;
+        }
+    }
+
+    public class WebAppInterface {
+        BaseActivity activity;
+
+        WebAppInterface(BaseActivity c) {
+            activity = c;
+        }
+        @JavascriptInterface
+        public void initialize(final String value) {
+            Log.i("initialize",value);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(value);
+                        activity.setTitle(jsonObject.getString("title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+        @JavascriptInterface
+        public void dataUpdate(String value) {
+            Log.i("dataUpdate",value);
+        }
+        @JavascriptInterface
+        public void imageUpload(String value) {
+            Log.i("imageUpload",value);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
+                    startActivityForResult(chooseImageIntent, 234);
+                }
+            });
+
+        }
+        @JavascriptInterface
+        public void imageOpen(String value) {
+            Log.i("imageOpen",value);
+        }
+        @JavascriptInterface
+        public void message(final String value) {
+            Log.i("message",value);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    activity.showSnack(value);
+                }
+            });
+        }
+        @JavascriptInterface
+        public void progressHide() {
+            Log.i("progressHide","");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    hideProgress();
+                }
+            });
+        }
+        @JavascriptInterface
+        public void progressShow() {
+            Log.i("progressShow","");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showProgress();
+                }
+            });
+        }
     }
 }

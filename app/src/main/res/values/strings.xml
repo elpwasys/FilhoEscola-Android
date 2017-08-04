@@ -24,6 +24,9 @@
     <!-- I -->
     <string name="inicio">Início</string>
 
+    <!-- L -->
+    <string name="limpar_cache">Limpar Cache</string>
+
     <!-- M -->
     <string name="mensal">Mensal</string>
     <string name="meu_cadastro">Meu Cadastro</string>

@@ -71,6 +71,9 @@ public class MensagensActivity extends BaseActivity {
                         break;
                     case R.id.item_mensagem:
                         break;
+                    case R.id.item_limpar:
+                        limparCache();
+                        break;
                     case R.id.item_sair:
                         sair();
                         break;

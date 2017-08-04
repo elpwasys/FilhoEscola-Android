@@ -9,7 +9,7 @@ import io.realm.RealmObject;
 public class Cache extends RealmObject {
 
     private byte[] data;
-    private String resource;
+    private String url;
     private String mimeType;
     private String enconding;
 
@@ -21,12 +21,12 @@ public class Cache extends RealmObject {
         this.data = data;
     }
 
-    public String getResource() {
-        return resource;
+    public String getUrl() {
+        return url;
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getMimeType() {

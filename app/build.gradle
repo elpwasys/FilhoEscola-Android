@@ -4,6 +4,8 @@ apply plugin: 'realm-android'
 
 
 android {
+
+
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
@@ -29,6 +31,8 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {

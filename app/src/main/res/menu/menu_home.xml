@@ -29,6 +29,10 @@
             android:icon="@mipmap/ico_help"/>
 
         <item
+            android:id="@+id/item_limpar"
+            android:title="@string/limpar_cache"/>
+
+        <item
             android:id="@+id/item_sair"
             android:icon="@mipmap/ic_exit_to_app_black_24dp"
             android:title="@string/sair"/>
