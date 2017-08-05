@@ -67,7 +67,6 @@ public class WebActivity extends BaseActivity {
 
         setSupportActionBar(toolbar);
 
-        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
         webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setVerticalScrollBarEnabled(true);
         webView.setScrollbarFadingEnabled(true);
