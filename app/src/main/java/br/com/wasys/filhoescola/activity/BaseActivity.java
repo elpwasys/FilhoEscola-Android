@@ -72,7 +72,10 @@ public class BaseActivity extends AppActivity {
     }
 
     public void limparCache() {
-        Realm.getDefaultInstance().delete(Cache.class);
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.delete(Cache.class);
+        realm.commitTransaction();
         showSnack("Cache limpo");
     }
 
