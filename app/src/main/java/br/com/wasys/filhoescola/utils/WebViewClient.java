@@ -7,21 +7,18 @@ import android.webkit.MimeTypeMap;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.realm.Cache;
 import br.com.wasys.library.enumerator.DeviceHeader;
 import br.com.wasys.library.utils.AndroidUtils;
 import io.realm.Realm;
+import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -49,7 +46,11 @@ public class WebViewClient extends android.webkit.WebViewClient {
 
             if(cache == null) {
 
-                OkHttpClient httpClient = new OkHttpClient();
+                CookieManager cookieManager = new CookieManager();
+                cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+                OkHttpClient httpClient = new OkHttpClient.Builder()
+                        .cookieJar(new JavaNetCookieJar(cookieManager))
+                        .build();
                 Request request = new Request.Builder()
                         .url(url.trim())
                         .addHeader(DeviceHeader.DEVICE_SO.key, "Android")
