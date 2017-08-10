@@ -69,7 +69,11 @@ public class WebViewClient extends android.webkit.WebViewClient {
                 cache.setData(response.body().bytes());
                 cache.setUrl(url);
                 cache.setEnconding(response.header("content-encoding", "utf-8"));
-                cache.setMimeType(response.header("Content-Type").replace(";charset=UTF-8", ""));
+                if(response.header("Content-Type").contains(";charset=UTF-8")) {
+                    cache.setMimeType(response.header("Content-Type").replace(";charset=UTF-8", ""));
+                }else{
+                    cache.setMimeType(response.header("Content-Type"));
+                }
                 realm.commitTransaction();
             }
 
