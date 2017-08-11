@@ -2,22 +2,30 @@ package br.com.wasys.filhoescola.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.preference.PreferenceActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.Map;
+import java.util.Set;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.realm.Cache;
 import br.com.wasys.library.enumerator.DeviceHeader;
 import br.com.wasys.library.utils.AndroidUtils;
 import io.realm.Realm;
+import okhttp3.Headers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,58 +38,69 @@ import okhttp3.Response;
 
 public class WebViewClient extends android.webkit.WebViewClient {
     public Context context;
+    private Cache cache;
 
     public WebViewClient(Context context) {
         this.context = context;
     }
+
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         try {
             Realm realm = Realm.getDefaultInstance();
 
-            Cache cache;
-
             cache = Realm.getDefaultInstance().where(Cache.class).like("url", url).findFirst();
 
             if(cache == null) {
-
-                CookieManager cookieManager = new CookieManager();
-                cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-                OkHttpClient httpClient = new OkHttpClient.Builder()
-                        .cookieJar(new JavaNetCookieJar(cookieManager))
-                        .build();
-                Request request = new Request.Builder()
-                        .url(url.trim())
-                        .addHeader(DeviceHeader.DEVICE_SO.key, "Android")
-                        .addHeader(DeviceHeader.DEVICE_SO_VERSION.key, Build.VERSION.RELEASE)
-                        .addHeader(DeviceHeader.DEVICE_MODEL.key, Build.MODEL)
-                        .addHeader(DeviceHeader.DEVICE_IMEI.key, AndroidUtils.getIMEI(context))
-                        .addHeader(DeviceHeader.DEVICE_WIDTH.key, String.valueOf(AndroidUtils.getWidthPixels(context)))
-                        .addHeader(DeviceHeader.DEVICE_HEIGHT.key, String.valueOf(AndroidUtils.getHeightPixels(context)))
-                        .addHeader(DeviceHeader.DEVICE_APP_VERSION.key, String.valueOf(AndroidUtils.getVersionCode(context)))
-                        .addHeader(DeviceHeader.DEVICE_TOKEN.key, FilhoNaEscolaApplication.getAuthorization())
-                        .build();
-                Response response = httpClient.newCall(request).execute();
-
-                realm.beginTransaction();
-                cache = realm.createObject(Cache.class);
-                cache.setData(response.body().bytes());
-                cache.setUrl(url);
-                cache.setEnconding(response.header("content-encoding", "utf-8"));
-                if(response.header("Content-Type").contains(";charset=UTF-8")) {
-                    cache.setMimeType(response.header("Content-Type").replace(";charset=UTF-8", ""));
+                if(getMimeType(url) == null) {
+                    Log.d("request",url);
+                    return super.shouldInterceptRequest(view,url);
                 }else{
-                    cache.setMimeType(response.header("Content-Type"));
-                }
-                realm.commitTransaction();
-            }
 
+                    OkHttpClient httpClient = new OkHttpClient.Builder().build();
+                    Request request = new Request.Builder()
+                            .url(url.trim())
+                            .addHeader(DeviceHeader.DEVICE_SO.key, "Android")
+                            .addHeader(DeviceHeader.DEVICE_SO_VERSION.key, Build.VERSION.RELEASE)
+                            .addHeader(DeviceHeader.DEVICE_MODEL.key, Build.MODEL)
+                            .addHeader(DeviceHeader.DEVICE_IMEI.key, AndroidUtils.getIMEI(context))
+                            .addHeader(DeviceHeader.DEVICE_WIDTH.key, String.valueOf(AndroidUtils.getWidthPixels(context)))
+                            .addHeader(DeviceHeader.DEVICE_HEIGHT.key, String.valueOf(AndroidUtils.getHeightPixels(context)))
+                            .addHeader(DeviceHeader.DEVICE_APP_VERSION.key, String.valueOf(AndroidUtils.getVersionCode(context)))
+                            .addHeader(DeviceHeader.DEVICE_TOKEN.key, FilhoNaEscolaApplication.getAuthorization())
+                            .build();
+                    Response response = httpClient.newCall(request).execute();
+                    cache = new Cache();
+                    cache.setData(response.body().bytes());
+                    cache.setUrl(url);
+                    cache.setEnconding(response.header("content-encoding", "utf-8"));
+                    cache.setMimeType(getMimeType(url));
+
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            try {
+                                Cache cacheRealm = realm.createObject(Cache.class);
+                                cacheRealm.setData(cache.getData());
+                                cacheRealm.setEnconding(cache.getEnconding());
+                                cacheRealm.setMimeType(cache.getMimeType());
+                                cacheRealm.setUrl(cache.getUrl());
+                                Log.d("request-cache-save",cache.getUrl() );
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+            Log.d("request-cache",url);
             return new WebResourceResponse(
                     cache.getMimeType(),
                     cache.getEnconding(),
                     new ByteArrayInputStream(cache.getData())
             );
+
         } catch (IOException e) {
             return null;
         }
@@ -102,10 +121,14 @@ public class WebViewClient extends android.webkit.WebViewClient {
                 return "application/vnd.ms-fontobject";
             } else if (extension.equals("svg")) {
                 return "image/svg+xml";
-            } else if (extension.contains(".xhtml")){
-                return "application/xhtml+xml";
-            } else {
+            } else if (extension.equals("css")) {
                 return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            } else if (extension.contains("png")){
+                return "image/png";
+            } else if (extension.contains("jpg")){
+                return "image/jpeg";
+            }else {
+                return null;
             }
         }else {
             return null;

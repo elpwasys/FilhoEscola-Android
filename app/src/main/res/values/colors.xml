@@ -7,4 +7,8 @@
     <color name="cinza_fundo">#E0E0E0</color>
     <color name="cinza_medio">#808080</color>
     <color name="branco">#FFFFFF</color>
+    <color name="vermelho">#FF0000</color>
+    <color name="verde">#00FF00</color>
+    <color name="amarelo">#FFFF00</color>
+    <color name="preto">#000</color>
 </resources>

@@ -18,5 +18,6 @@ public class DispositivoModel implements Serializable{
     public String prefixo;
     public Date dataNascimento;
     public StatusDispositivo status;
+    public String imagemURI;
 
 }

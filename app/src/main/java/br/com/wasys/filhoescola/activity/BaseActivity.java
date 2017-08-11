@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,9 +18,12 @@ import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
+import br.com.wasys.filhoescola.enumeradores.TypeMessage;
+import br.com.wasys.filhoescola.model.MessageModel;
 import br.com.wasys.filhoescola.realm.Cache;
 import br.com.wasys.library.activity.AppActivity;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -42,6 +46,28 @@ public class BaseActivity extends AppActivity {
 
                     }
                 }).show();
+    }
+    public void showSnack(MessageModel mensagem) {
+
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), mensagem.getContent(), Snackbar.LENGTH_LONG);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(getResources().getColor(R.color.preto));
+        switch (mensagem.getType()){
+            case INFO:
+            case SUCCESS:
+                sbView.setBackgroundColor(getResources().getColor(R.color.verde));
+                break;
+            case ERROR:
+                sbView.setBackgroundColor(getResources().getColor(R.color.vermelho));
+                break;
+            case WARNING:
+                sbView.setBackgroundColor(getResources().getColor(R.color.amarelo));
+                break;
+
+        }
+        snackbar.show();
+
     }
 
     public void home() {
@@ -74,7 +100,8 @@ public class BaseActivity extends AppActivity {
     public void limparCache() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.delete(Cache.class);
+        RealmResults<Cache> results = realm.where(Cache.class).findAll();
+        results.deleteAllFromRealm();
         realm.commitTransaction();
         showSnack("Cache limpo");
     }
