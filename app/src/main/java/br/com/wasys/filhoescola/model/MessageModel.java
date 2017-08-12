@@ -23,7 +23,7 @@ public class MessageModel {
                 this.title = jsonObject.getString("title");
             if(!jsonObject.isNull("content"))
                 this.content = jsonObject.getString("content");
-            this.type = TypeMessage.getAssunto(jsonObject.getString("type"));
+            this.type = TypeMessage.getType(jsonObject.getString("type"));
         }catch (Exception e){
             e.printStackTrace();
         }

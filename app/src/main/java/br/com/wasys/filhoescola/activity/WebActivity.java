@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Xml;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -25,7 +26,9 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.deser.Deserializers;
@@ -33,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +52,10 @@ import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.endpoint.Endpoint;
 import br.com.wasys.filhoescola.enumeradores.TipoFuncionario;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
+import br.com.wasys.filhoescola.model.ButtonModel;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.filhoescola.model.MessageModel;
+import br.com.wasys.filhoescola.model.ViewModel;
 import br.com.wasys.filhoescola.utils.ImagePicker;
 import br.com.wasys.filhoescola.utils.WebViewClient;
 import br.com.wasys.library.enumerator.DeviceHeader;
@@ -68,6 +74,10 @@ public class WebActivity extends BaseActivity {
     NavigationView navigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.lilToolbar)
+    LinearLayout lilToolbar;
+    @BindView(R.id.txtToolbar)
+    TextView txtToolbar;
 
     public static final String BASE_URL = BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_MOBILE;
 
@@ -86,6 +96,9 @@ public class WebActivity extends BaseActivity {
         cookieManager.setAcceptCookie(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cookieManager.setAcceptThirdPartyCookies(webView, true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.setWebContentsDebuggingEnabled(true);
         }
 
         webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -120,7 +133,41 @@ public class WebActivity extends BaseActivity {
         loadPage();
 
         initNavigationDrawer();
+
+
     }
+
+    public void inicializacao(ViewModel viewModel){
+
+        txtToolbar.setText(viewModel.getTitle());
+        if(viewModel.getToolbar() != null && viewModel.getToolbar().getButtons() != null && !viewModel.getToolbar().getButtons().isEmpty()) {
+            lilToolbar.removeAllViews();
+            for (ButtonModel buttonModel : viewModel.getToolbar().getButtons()) {
+                ImageView imagemView = new ImageView(this);
+                Picasso.with(this)
+                        .load(BuildConfig.BASE_URL + buttonModel.getSrc())
+                        .placeholder(R.mipmap.ic_exit_to_app_black_24dp)
+                        .error(R.mipmap.ic_exit_to_app_black_24dp)
+                        .into(imagemView);
+
+                imagemView.setTag(buttonModel.getId());
+                imagemView.setOnClickListener(onClickListener);
+                imagemView.setPadding(10,0,10,0);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                params.gravity = Gravity.RIGHT;
+                imagemView.setLayoutParams(params);
+                lilToolbar.addView(imagemView);
+            }
+        }
+    }
+
+    private ImageView.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("click","javascript:Device.onTapped(" + v.getTag() + ")");
+            webView.loadUrl("javascript:Device.onTapped(" + v.getTag() + ")");
+        }
+    };
 
     public void loadPage() {
 
@@ -133,7 +180,7 @@ public class WebActivity extends BaseActivity {
         map.put(DeviceHeader.DEVICE_HEIGHT.key, String.valueOf(AndroidUtils.getHeightPixels(this)));
         map.put(DeviceHeader.DEVICE_APP_VERSION.key, String.valueOf(AndroidUtils.getVersionCode(this)));
         map.put(DeviceHeader.DEVICE_TOKEN.key, FilhoNaEscolaApplication.getAuthorization());
-
+        Log.d("Token",FilhoNaEscolaApplication.getAuthorization());
         switch (tipo) {
             case INICIO:
                 webView.loadUrl(BASE_URL + "aluno/configuracao.xhtml", map);
@@ -226,19 +273,30 @@ public class WebActivity extends BaseActivity {
                     @Override
                     public void run() {
                         try {
-                            final String retorno = uploadImage(file);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(retorno);
-                                        hideProgress();
-                                        webView.loadUrl("javascript:Device.onUpload(JSON.parse('" + jsonObject.toString() + "'))");
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                            if(file != null) {
+                                final String retorno = uploadImage(file);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(retorno);
+                                            hideProgress();
+                                            Log.d("click","javascript:Device.onUpload(JSON.parse('" + jsonObject.toString() + "'))");
+                                            webView.loadUrl("javascript:Device.onUpload(JSON.parse('" + jsonObject.toString() + "'))");
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }else{
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        hideProgress();
+                                    }
+                                });
+
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -262,12 +320,9 @@ public class WebActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-                    JSONObject jsonObject = null;
                     try {
-                        jsonObject = new JSONObject(value);
-                        activity.setTitle(jsonObject.getString("title"));
-                    } catch (JSONException e) {
+                        inicializacao(JacksonUtils.getObjectMapper().readValue(value, ViewModel.class));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 

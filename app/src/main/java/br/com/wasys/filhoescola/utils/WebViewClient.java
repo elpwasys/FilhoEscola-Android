@@ -57,7 +57,7 @@ public class WebViewClient extends android.webkit.WebViewClient {
                     Log.d("request",url);
                     return super.shouldInterceptRequest(view,url);
                 }else{
-
+                    Log.d("Token",FilhoNaEscolaApplication.getAuthorization());
                     OkHttpClient httpClient = new OkHttpClient.Builder().build();
                     Request request = new Request.Builder()
                             .url(url.trim())

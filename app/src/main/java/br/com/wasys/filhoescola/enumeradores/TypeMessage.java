@@ -22,7 +22,7 @@ public enum TypeMessage {
         return type;
     }
 
-    public static TypeMessage getAssunto(String type) {
+    public static TypeMessage getType(String type) {
         if(type.equals("INFO")){
             return INFO;
         }else if(type.equals("ERROR")){
