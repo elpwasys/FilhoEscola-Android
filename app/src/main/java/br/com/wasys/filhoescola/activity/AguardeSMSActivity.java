@@ -10,6 +10,7 @@ import android.widget.EditText;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.business.DispositivoBusiness;
+import br.com.wasys.filhoescola.enumeradores.StatusDispositivo;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,9 +173,41 @@ public class AguardeSMSActivity extends BaseActivity {
                     }
                     @Override
                     public void onNext(DispositivoModel dispositivoModel1) {
-                        home();
-                        FilhoNaEscolaApplication.setAuthorization(dispositivoModel1.token);
-                        FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
+                        if(dispositivoModel1.token == null || dispositivoModel1.status == StatusDispositivo.NAO_VERIFICADO){
+                            showSnack("Código inserido incorreto");
+                        }else {
+                            FilhoNaEscolaApplication.setAuthorization(dispositivoModel1.token);
+                            FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
+                            home();
+                        }
+                    }
+                });
+
+
+    }
+    @OnClick(R.id.btn_reenviar)
+    public void reenviar() {
+        DispositivoBusiness business = new DispositivoBusiness(this);
+        Observable<DispositivoModel> observable = business.reenviar(dispositivoModel.prefixo,dispositivoModel.numero);
+        prepare(observable)
+                .subscribe(new Subscriber<DispositivoModel>() {
+                    @Override
+                    public void onStart() {
+                        showProgress();
+                    }
+                    @Override
+                    public void onCompleted() {
+                        hideProgress();
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        hideProgress();
+                        e.printStackTrace();
+                        showSnack(e.getMessage());
+                    }
+                    @Override
+                    public void onNext(DispositivoModel dispositivoModel1) {
+                        showSnack("Mensagem reenviada");
                     }
                 });
 

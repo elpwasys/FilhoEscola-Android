@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_margin="8dp"
+    android:background="@color/branco"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="horizontal">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAluno"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="0"
+            android:src="@mipmap/ico_usuario"
+            app:civ_border_width="0dp"
+            app:civ_border_color="#FF000000"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:id="@+id/txtNomeAluno"
+            android:textSize="20sp"
+            android:text="Nome Aluno"
+            android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:id="@+id/lilNumeroMensagens"
+            android:background="@drawable/circle_laranja">
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/txtNumeroMensagens"
+            android:textSize="15sp"
+            android:textColor="@color/branco"
+            android:text="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

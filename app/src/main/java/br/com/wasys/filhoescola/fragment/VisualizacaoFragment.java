@@ -135,7 +135,7 @@ public class VisualizacaoFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
         }else {
-            adapter = new MensagemAdapter(mensagens, getActivity());
+            adapter = new MensagemAdapter(mensagens, (BaseActivity) getActivity());
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             recyclerView.setVisibility(View.VISIBLE);

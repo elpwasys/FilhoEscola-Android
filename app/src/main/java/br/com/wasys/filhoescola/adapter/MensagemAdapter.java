@@ -1,6 +1,5 @@
 package br.com.wasys.filhoescola.adapter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -9,17 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.R;
+import br.com.wasys.filhoescola.activity.BaseActivity;
+import br.com.wasys.filhoescola.enumeradores.Assunto;
 import br.com.wasys.filhoescola.realm.Mensagem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
@@ -27,14 +30,24 @@ import io.realm.RealmResults;
  * Created by bruno on 14/07/17.
  */
 
-public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, MensagemAdapter.ViewHolder> {
+public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, MensagemAdapter.ViewHolder> implements View.OnClickListener{
 
-    public Activity activity;
+    public BaseActivity activity;
+    private static ItemClickListener itemClickListener;
 
-    public MensagemAdapter(RealmResults<Mensagem> data, Activity activity) {
+    public MensagemAdapter(RealmResults<Mensagem> data, BaseActivity activity) {
         super(data, true);
         setHasStableIds(true);
         this.activity = activity;
+    }
+    public MensagemAdapter(RealmList<Mensagem> data, BaseActivity activity) {
+        super(data, true);
+        setHasStableIds(true);
+        this.activity = activity;
+    }
+
+    public void setOnItemClickListener(ItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -46,23 +59,24 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Mensagem
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Mensagem obj = getItem(position);
-        holder.txtNomeAluno.setText(obj.getAluno().getNome());
-        holder.txtAtividade.setText(obj.getAssunto());
-        holder.txtEscola.setText(obj.getEscola().getNome());
-        holder.txtProfessor.setText(obj.getFuncionario().getNome());
+        Picasso.with(activity)
+                .load(BuildConfig.BASE_URL+BuildConfig.BASE_CONTEXT_FILE+obj.getEscola().getImagem().getCaminho())
+                .into(holder.imgEscola);
         holder.txtMensagem.setText(obj.getConteudo());
+        holder.txtAssunto.setText(Assunto.getAssunto(obj.getAssunto()).toString());
+        holder.imgAssunto.setImageResource(Assunto.getAssunto(obj.getAssunto()).getImagem());
 
-        holder.btnAcao.setText(obj.getBotaoTexto());
-        holder.btnAcao.setTag(obj.getBotaoLink());
-        holder.btnAcao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(obj.getBotaoLink()));
-                 activity.startActivity(intent);
-            }
-        });
+        holder.imgEscola.setOnClickListener(this);
+        holder.txtMensagem.setOnClickListener(this);
+        holder.txtAssunto.setOnClickListener(this);
+        holder.imgAssunto.setOnClickListener(this);
+        holder.linearLayout.setOnClickListener(this);
+        holder.linearLayout.setTag(obj.getId());
+        holder.imgEscola.setTag(obj.getId());
+        holder.txtMensagem.setTag(obj.getId());
+        holder.txtAssunto.setTag(obj.getId());
+        holder.imgAssunto.setTag(obj.getId());
 
-        holder.btnAcao.setVisibility(obj.getBotaoTexto() != null && StringUtils.isNotEmpty(obj.getBotaoTexto()) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -70,19 +84,29 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Mensagem
         return getItem(index).getId();
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if(itemClickListener != null) {
+            itemClickListener.onItemClick((Long) v.getTag());
+        }
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.imgAluno) ImageView imgAluno;
-        @BindView(R.id.txtNomeAluno) TextView txtNomeAluno;
-        @BindView(R.id.txtEscola) TextView txtEscola;
-        @BindView(R.id.txtProfessor) TextView txtProfessor;
-        @BindView(R.id.txtAtividade) TextView txtAtividade;
+        @BindView(R.id.imgEscola) ImageView imgEscola;
+        @BindView(R.id.imgAssunto) ImageView imgAssunto;
+        @BindView(R.id.txtAssunto) TextView txtAssunto;
         @BindView(R.id.txtMensagem) TextView txtMensagem;
-        @BindView(R.id.btnAcao) Button btnAcao;
+        @BindView(R.id.layout) LinearLayout linearLayout;
 
         ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+    public interface ItemClickListener {
+
+        void onItemClick(Long position);
     }
 
 }

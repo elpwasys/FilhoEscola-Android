@@ -28,6 +28,10 @@ public class DispositivoBusiness extends Business {
         return Observable.create(new VerificarHandler(prefixo,numero,codigo));
     }
 
+    public Observable<DispositivoModel> reenviar(String prefixo,String numero) {
+        return Observable.create(new ReenviarHandler(prefixo,numero));
+    }
+
     private class ConfirmarHandler implements Observable.OnSubscribe<DispositivoModel> {
         private DispositivoModel dispositivoModel;
         public ConfirmarHandler(DispositivoModel dispositivoModel) {
@@ -64,6 +68,30 @@ public class DispositivoBusiness extends Business {
             try {
                 DispositivoEndpoint endpoint = Endpoint.create(DispositivoEndpoint.class);
                 Call<DispositivoModel> call = endpoint.verificar(prefixo,numero,codigo);
+                DispositivoModel model = Endpoint.execute(call);
+                subscriber.onNext(model);
+                subscriber.onCompleted();
+            } catch (Throwable e) {
+                subscriber.onError(e);
+            } finally {
+            }
+        }
+    }
+
+    private class ReenviarHandler implements Observable.OnSubscribe<DispositivoModel> {
+        private String prefixo;
+        private String numero;
+
+        public ReenviarHandler(String prefixo, String numero) {
+            this.prefixo = prefixo;
+            this.numero = numero;
+        }
+
+        @Override
+        public void call(Subscriber<? super DispositivoModel> subscriber) {
+            try {
+                DispositivoEndpoint endpoint = Endpoint.create(DispositivoEndpoint.class);
+                Call<DispositivoModel> call = endpoint.reenviar(prefixo,numero);
                 DispositivoModel model = Endpoint.execute(call);
                 subscriber.onNext(model);
                 subscriber.onCompleted();

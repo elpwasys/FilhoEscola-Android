@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout
     android:id="@+id/main_content"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/cinza_fundo"
+    android:background="@color/branco"
     android:layout_height="match_parent"
     tools:context="br.com.wasys.filhoescola.activity.MensagensActivity">
 
@@ -32,31 +28,23 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/branco"
+        app:mcv_showOtherDates="all"
+        app:mcv_selectionColor="@color/colorAccent"
+        app:mcv_tileHeight="35dp"
+        app:mcv_firstDayOfWeek="sunday"
+        />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:id="@+id/recyclerView">
+        android:id="@+id/recyclerView"/>
 
-    </android.support.v7.widget.RecyclerView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/msg_nao_alunos"
-        android:gravity="center"
-        android:id="@+id/txtEmpty"
-        android:layout_margin="8dp"
-        android:textSize="18sp"/>
 
 
 </LinearLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/navigation_view"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/navegation_header"
-        app:menu="@menu/menu_home"/>
-
-</android.support.v4.widget.DrawerLayout>

@@ -9,6 +9,7 @@ import java.util.List;
 import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
 import br.com.wasys.filhoescola.endpoint.Endpoint;
 import br.com.wasys.filhoescola.endpoint.MensagemEndpoint;
+import br.com.wasys.filhoescola.enumeradores.StatusMensagemSincronizacao;
 import br.com.wasys.filhoescola.enumeradores.TipoVisualizacao;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.filhoescola.model.MensagemModel;
@@ -71,6 +72,8 @@ public class MensagemBusiness extends Business {
                     if(mensagem == null){
                         mensagem = realm.createObject(Mensagem.class,model.id);
                         mensagem.createFrom(model);
+                        mensagem.setLida(false);
+                        mensagem.setStatus(StatusMensagemSincronizacao.AGUARDANDO);
                     }
 
                     mensagem.setEscola(escola);
@@ -78,12 +81,18 @@ public class MensagemBusiness extends Business {
                     mensagem.setAluno(aluno);
 
                     aluno.setEscola(escola);
-                    aluno.getMensagens().add(mensagem);
+                    if(!aluno.getMensagens().contains(mensagem)) {
+                        aluno.getMensagens().add(mensagem);
+                    }
 
                     funcionario.setEscola(escola);
-                    funcionario.getMensagens().add(mensagem);
+                    if(!funcionario.getMensagens().contains(mensagem)) {
+                        funcionario.getMensagens().add(mensagem);
+                    }
 
-                    escola.getMensagens().add(mensagem);
+                    if(!escola.getMensagens().contains(mensagem)) {
+                        escola.getMensagens().add(mensagem);
+                    }
 
                     if(!escola.getAlunos().contains(aluno)){
                         escola.getAlunos().add(aluno);

@@ -2,6 +2,7 @@ package br.com.wasys.filhoescola.realm;
 
 import java.util.Date;
 
+import br.com.wasys.filhoescola.enumeradores.StatusMensagemSincronizacao;
 import br.com.wasys.filhoescola.model.ImagemModel;
 import br.com.wasys.filhoescola.model.MensagemModel;
 import io.realm.RealmObject;
@@ -11,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by bruno on 04/07/17.
  */
 
-public class Mensagem extends RealmObject {
+public class    Mensagem extends RealmObject {
     @PrimaryKey
     private Long id;
     private Date data;
@@ -22,6 +23,8 @@ public class Mensagem extends RealmObject {
     private Escola escola;
     private Funcionario funcionario;
     private Aluno aluno;
+    private Boolean lida;
+    private String status;
 
     public void createFrom(MensagemModel mensagemModel){
         this.data = mensagemModel.data;
@@ -101,5 +104,29 @@ public class Mensagem extends RealmObject {
 
     public void setAluno(Aluno aluno) {
         this.aluno = aluno;
+    }
+
+    public Boolean getLida() {
+        return lida;
+    }
+
+    public void setLida(Boolean lida) {
+        this.lida = lida;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public StatusMensagemSincronizacao getStatusMensagemSincronizacao() {
+        return StatusMensagemSincronizacao.getStatus(status);
+    }
+
+    public void setStatus(StatusMensagemSincronizacao status) {
+        this.status = status.toString();
     }
 }

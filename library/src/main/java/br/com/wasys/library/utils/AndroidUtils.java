@@ -26,7 +26,12 @@ public class AndroidUtils {
 
     public static String getIMEI(Context context) {
         TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = manager.getDeviceId();
+        String imei;
+        if(manager.getDeviceId() == null){
+            imei = "123123123123123";
+        }else {
+            imei = manager.getDeviceId();
+        }
         return imei;
     }
 

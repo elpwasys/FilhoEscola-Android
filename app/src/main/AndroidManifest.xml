@@ -30,6 +30,10 @@
             android:label="@string/mensagens"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.WebActivity" android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.MensagensAlunoActivity"
+            android:label="@string/mensagens"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

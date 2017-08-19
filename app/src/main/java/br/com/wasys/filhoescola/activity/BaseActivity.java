@@ -92,6 +92,10 @@ public class BaseActivity extends AppActivity {
     }
 
     public void sair() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
         FilhoNaEscolaApplication.setDispositivoLogado(null);
         startActivity(new Intent(this, CadastroActivity.class));
         finish();

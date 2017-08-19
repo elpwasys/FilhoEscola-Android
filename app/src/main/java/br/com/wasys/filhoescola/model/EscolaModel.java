@@ -11,7 +11,6 @@ public class EscolaModel implements Serializable {
 
     public Long id;
     public String nome;
-    //public byte[] logo;
-    public ImagemModel imagem;
+    public ImagemModel logo;
 
 }

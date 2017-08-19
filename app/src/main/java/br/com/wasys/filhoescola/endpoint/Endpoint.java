@@ -41,7 +41,7 @@ public class Endpoint {
     public static Map<String, String> getHeaders(){
         Context context = FilhoNaEscolaApplication.getContext();
         Map<String, String> headers = new HashMap<>();
-        headers.put(DeviceHeader.DEVICE_SO.key, "Android");
+        headers.put(DeviceHeader.DEVICE_SO.key, "ANDROID");
         headers.put(DeviceHeader.DEVICE_SO_VERSION.key, Build.VERSION.RELEASE);
         headers.put(DeviceHeader.DEVICE_MODEL.key, Build.MODEL);
         headers.put(DeviceHeader.DEVICE_IMEI.key, AndroidUtils.getIMEI(context));
