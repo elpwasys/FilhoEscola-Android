@@ -13,6 +13,7 @@ import br.com.wasys.filhoescola.enumeradores.StatusMensagemSincronizacao;
 import br.com.wasys.filhoescola.enumeradores.TipoVisualizacao;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.filhoescola.model.MensagemModel;
+import br.com.wasys.filhoescola.model.SuccessModel;
 import br.com.wasys.filhoescola.realm.Aluno;
 import br.com.wasys.filhoescola.realm.Escola;
 import br.com.wasys.filhoescola.realm.Funcionario;
@@ -188,4 +189,31 @@ public class MensagemBusiness extends Business {
             }
         }
     }
+
+    public Observable<SuccessModel> getSync(Long id) {
+        return Observable.create(new SyncIdHandler(id));
+    }
+
+    private class SyncIdHandler implements Observable.OnSubscribe<SuccessModel> {
+
+        private Long id;
+
+        public SyncIdHandler(Long id) {
+            this.id = id;
+        }
+        @Override
+        public void call(Subscriber<? super SuccessModel> subscriber) {
+            try {
+                MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
+                Call<SuccessModel> call = endpoint.sincronizar(id);
+                SuccessModel model = Endpoint.execute(call);
+                subscriber.onNext(model);
+                subscriber.onCompleted();
+            } catch (Throwable e) {
+                subscriber.onError(e);
+            } finally {
+            }
+        }
+    }
+
 }

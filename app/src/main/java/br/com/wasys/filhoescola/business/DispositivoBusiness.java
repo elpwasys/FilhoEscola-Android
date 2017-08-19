@@ -31,7 +31,7 @@ public class DispositivoBusiness extends Business {
     public Observable<DispositivoModel> reenviar(String prefixo,String numero) {
         return Observable.create(new ReenviarHandler(prefixo,numero));
     }
-    public Observable<Boolean> push(String token) {
+    public Observable<DispositivoModel> push(String token) {
         return Observable.create(new PushHandler(token));
     }
 
@@ -105,7 +105,7 @@ public class DispositivoBusiness extends Business {
         }
     }
 
-    private class PushHandler implements Observable.OnSubscribe<Boolean> {
+    private class PushHandler implements Observable.OnSubscribe<DispositivoModel> {
         private String token;
 
         public PushHandler(String token) {
@@ -113,12 +113,12 @@ public class DispositivoBusiness extends Business {
         }
 
         @Override
-        public void call(Subscriber<? super Boolean> subscriber) {
+        public void call(Subscriber<? super DispositivoModel> subscriber) {
             try {
                 DispositivoEndpoint endpoint = Endpoint.create(DispositivoEndpoint.class);
                 Call<DispositivoModel> call = endpoint.push(token);
-                Endpoint.execute(call);
-                subscriber.onNext(true);
+                DispositivoModel dispositivoModel = Endpoint.execute(call);
+                subscriber.onNext(dispositivoModel);
                 subscriber.onCompleted();
             } catch (Throwable e) {
                 subscriber.onError(e);

@@ -1,7 +1,6 @@
-package firebase;
+package br.com.wasys.filhoescola.firebase;
 
 
-import android.content.Intent;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
@@ -10,12 +9,8 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
-import br.com.wasys.filhoescola.activity.AguardeSMSActivity;
-import br.com.wasys.filhoescola.activity.CadastroActivity;
 import br.com.wasys.filhoescola.business.DispositivoBusiness;
 import br.com.wasys.filhoescola.model.DispositivoModel;
-import br.com.wasys.library.widget.Progress;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,11 +32,11 @@ public class FilhoFirebaseInstanceIDService extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+
         DispositivoBusiness business = new DispositivoBusiness(this);
-        Observable<Boolean> observable = business.push(token);
+        Observable<DispositivoModel> observable = business.push(token);
         prepare(observable)
-                .subscribe(new Subscriber<Boolean>() {
+                .subscribe(new Subscriber<DispositivoModel>() {
                     @Override
                     public void onStart(){
                     }
@@ -53,7 +48,8 @@ public class FilhoFirebaseInstanceIDService extends FirebaseInstanceIdService {
                         e.printStackTrace();
                     }
                     @Override
-                    public void onNext(Boolean dispositivoModel1) {
+                    public void onNext(DispositivoModel dispositivoModel1) {
+                        Log.d("DispositivoModel", dispositivoModel1.toString());
 
                     }
                 });

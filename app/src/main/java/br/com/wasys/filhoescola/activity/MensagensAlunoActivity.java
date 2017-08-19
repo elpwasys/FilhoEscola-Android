@@ -58,6 +58,7 @@ import br.com.wasys.filhoescola.business.MensagemBusiness;
 import br.com.wasys.filhoescola.enumeradores.Assunto;
 import br.com.wasys.filhoescola.realm.Aluno;
 import br.com.wasys.filhoescola.realm.Mensagem;
+import br.com.wasys.filhoescola.service.SyncMensagensService;
 import br.com.wasys.filhoescola.utils.EventDecorator;
 import br.com.wasys.library.utils.DateUtils;
 import br.com.wasys.library.widget.AlertDialog;
@@ -77,8 +78,8 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
     @BindView(R.id.calendarView) MaterialCalendarView calendarView;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
 
-    private Long idAluno;
-    private Long idMensagem;
+    private Long idAluno = Long.parseLong("0");
+    private Long idMensagem = Long.parseLong("0");
 
     private MensagemHeadersAdapter adapter;
 
@@ -169,7 +170,13 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
         adapter.setOnItemClickListener(new MensagemAdapter.ItemClickListener() {
             @Override
             public void onItemClick(Long position) {
-                final Mensagem obj = Realm.getDefaultInstance().where(Mensagem.class).equalTo("id",position).findFirst();
+                Realm realm = Realm.getDefaultInstance();
+                final Mensagem obj = realm.where(Mensagem.class).equalTo("id",position).findFirst();
+                realm.beginTransaction();
+                obj.setLida(true);
+                realm.commitTransaction();
+                startService(new Intent(MensagensAlunoActivity.this, SyncMensagensService.class));
+
                 final Dialog dialog = new Dialog(MensagensAlunoActivity.this);
                 dialog.setContentView(R.layout.view_mensagem);
                 ImageView imgFechar = (ImageView) dialog.findViewById(R.id.imgFechar);

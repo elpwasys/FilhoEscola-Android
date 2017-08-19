@@ -1,4 +1,4 @@
-package firebase;
+package br.com.wasys.filhoescola.firebase;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,12 +15,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.activity.MensagensAlunoActivity;
-import br.com.wasys.filhoescola.activity.SplashScreenActivity;
 import br.com.wasys.filhoescola.business.MensagemBusiness;
 import br.com.wasys.filhoescola.enumeradores.Assunto;
-import br.com.wasys.filhoescola.realm.Mensagem;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

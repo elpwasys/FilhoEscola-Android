@@ -44,7 +44,6 @@ public class BaseActivity extends AppActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TokenFCM", FirebaseInstanceId.getInstance().getToken());
     }
 
     public void showSnack(String mensagem) {
