@@ -2,11 +2,15 @@ package br.com.wasys.filhoescola.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.TextView;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,6 +40,12 @@ import okhttp3.Response;
  */
 
 public class BaseActivity extends AppActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("TokenFCM", FirebaseInstanceId.getInstance().getToken());
+    }
 
     public void showSnack(String mensagem) {
 

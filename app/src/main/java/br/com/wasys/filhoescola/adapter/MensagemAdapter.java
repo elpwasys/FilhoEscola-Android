@@ -33,7 +33,7 @@ import io.realm.RealmResults;
 public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, MensagemAdapter.ViewHolder> implements View.OnClickListener{
 
     public BaseActivity activity;
-    private static ItemClickListener itemClickListener;
+    private ItemClickListener itemClickListener;
 
     public MensagemAdapter(RealmResults<Mensagem> data, BaseActivity activity) {
         super(data, true);
@@ -48,6 +48,10 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Mensagem
 
     public void setOnItemClickListener(ItemClickListener itemClickListener){
         this.itemClickListener = itemClickListener;
+    }
+
+    public ItemClickListener getItemClickListener() {
+        return itemClickListener;
     }
 
     @Override

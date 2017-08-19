@@ -17,4 +17,10 @@ public interface MensagemEndpoint {
 
     @POST("mensagem/buscar")
     Call<List<MensagemModel>> buscar();
+
+    @GET("mensagem/{id}")
+    Call<MensagemModel> getMensagem(@Path("id") String id);
+
+    @POST("mensagem/sincronizar")
+    Call<List<MensagemModel>> sincronizar();
 }

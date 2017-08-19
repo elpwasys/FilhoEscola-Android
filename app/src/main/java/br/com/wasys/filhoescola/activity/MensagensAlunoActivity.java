@@ -78,6 +78,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
 
     private Long idAluno;
+    private Long idMensagem;
 
     private MensagemHeadersAdapter adapter;
 
@@ -94,6 +95,11 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
         setContentView(R.layout.activity_mensagem_aluno);
 
         idAluno = getIntent().getLongExtra("idAluno",0);
+
+        if(idAluno == 0){
+            idMensagem = getIntent().getLongExtra("idMensagem",0);
+            idAluno = Realm.getDefaultInstance().where(Mensagem.class).equalTo("id",idMensagem).findFirst().getAluno().getId();
+        }
 
         ButterKnife.bind(this);
 
@@ -208,6 +214,10 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
                 dialog.show();
             }
         });
+        if(idMensagem != 0){
+            adapter.getItemClickListener().onItemClick(idMensagem);
+        }
+
     }
 
     @Override
@@ -229,6 +239,15 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
         onBackPressed();
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(MensagensAlunoActivity.this,MensagensActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private class MensagemHeadersAdapter extends MensagemAdapter
             implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
         public MensagemHeadersAdapter(RealmResults<Mensagem> data, BaseActivity activity) {

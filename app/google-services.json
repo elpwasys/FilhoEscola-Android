@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "991615614197",
+    "firebase_url": "https://filho-na-escola-36ae5.firebaseio.com",
+    "project_id": "filho-na-escola-36ae5",
+    "storage_bucket": "filho-na-escola-36ae5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991615614197:android:10149bd469669113",
+        "android_client_info": {
+          "package_name": "br.com.wasys.filhoescola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991615614197-0acgrj5g6fhovtlvh69gl6lpa9pf5b4e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2Ci1VrHWJ9AzmWV8PSOo_AjBtejBN08E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

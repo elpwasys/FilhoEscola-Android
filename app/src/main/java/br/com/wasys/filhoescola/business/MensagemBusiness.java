@@ -111,4 +111,81 @@ public class MensagemBusiness extends Business {
             }
         }
     }
+
+    public Observable<Long> getMensagem(String id) {
+        return Observable.create(new BuscaMensagemIdHandler(id));
+    }
+
+    private class BuscaMensagemIdHandler implements Observable.OnSubscribe<Long> {
+
+        private String id;
+
+        public BuscaMensagemIdHandler(String id) {
+            this.id = id;
+        }
+        @Override
+        public void call(Subscriber<? super Long> subscriber) {
+            try {
+                MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
+                Call<MensagemModel> call = endpoint.getMensagem(id);
+                MensagemModel model = Endpoint.execute(call);
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                Aluno aluno = realm.where(Aluno.class).equalTo("id",model.aluno.id).findFirst();
+                if(aluno == null){
+                    aluno = realm.createObject(Aluno.class,model.aluno.id);
+                    aluno.createFrom(model.aluno);
+                }
+                Escola escola = realm.where(Escola.class).equalTo("id",model.escola.id).findFirst();
+                if(escola == null){
+                    escola = realm.createObject(Escola.class,model.escola.id);
+                    escola.createFrom(realm,model.escola);
+                }
+                Funcionario funcionario = realm.where(Funcionario.class).equalTo("id",model.funcionario.id).findFirst();
+                if(funcionario == null){
+                    funcionario = realm.createObject(Funcionario.class,model.funcionario.id);
+                    funcionario.createFrom(model.funcionario);
+                }
+                Mensagem mensagem  = realm.where(Mensagem.class).equalTo("id",model.id).findFirst();
+                if(mensagem == null){
+                    mensagem = realm.createObject(Mensagem.class,model.id);
+                    mensagem.createFrom(model);
+                    mensagem.setLida(false);
+                    mensagem.setStatus(StatusMensagemSincronizacao.AGUARDANDO);
+                }
+
+                mensagem.setEscola(escola);
+                mensagem.setFuncionario(funcionario);
+                mensagem.setAluno(aluno);
+
+                aluno.setEscola(escola);
+                if(!aluno.getMensagens().contains(mensagem)) {
+                    aluno.getMensagens().add(mensagem);
+                }
+
+                funcionario.setEscola(escola);
+                if(!funcionario.getMensagens().contains(mensagem)) {
+                    funcionario.getMensagens().add(mensagem);
+                }
+
+                if(!escola.getMensagens().contains(mensagem)) {
+                    escola.getMensagens().add(mensagem);
+                }
+
+                if(!escola.getAlunos().contains(aluno)){
+                    escola.getAlunos().add(aluno);
+                }
+
+                if(!escola.getFuncionarios().contains(funcionario)){
+                    escola.getFuncionarios().add(funcionario);
+                }
+                realm.commitTransaction();
+                subscriber.onNext(mensagem.getId());
+                subscriber.onCompleted();
+            } catch (Throwable e) {
+                subscriber.onError(e);
+            } finally {
+            }
+        }
+    }
 }

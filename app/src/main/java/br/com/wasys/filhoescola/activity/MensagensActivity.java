@@ -2,15 +2,12 @@ package br.com.wasys.filhoescola.activity;
 
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +21,8 @@ import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.adapter.AlunoAdapter;
-import br.com.wasys.filhoescola.adapter.MensagemAdapter;
-import br.com.wasys.filhoescola.adapter.MensagensPagerAdapter;
 import br.com.wasys.filhoescola.business.MensagemBusiness;
 import br.com.wasys.filhoescola.realm.Aluno;
-import br.com.wasys.library.activity.AppActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -113,6 +107,7 @@ public class MensagensActivity extends BaseActivity {
                     Intent intent = new Intent(MensagensActivity.this,MensagensAlunoActivity.class);
                     intent.putExtra("idAluno",position);
                     startActivity(intent);
+                    finish();
                 }
             });
         }

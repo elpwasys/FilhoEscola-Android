@@ -20,4 +20,7 @@ public interface DispositivoEndpoint {
 
     @GET("dispositivo/verificar/{prefixo}/{numero}/{codigo}")
     Call<DispositivoModel> verificar(@Path("prefixo") String prefixo, @Path("numero") String numero,@Path("codigo") String codigo);
+
+    @GET("dispositivo/atualizar/push/{token}")
+    Call<DispositivoModel> push(@Path("token") String token);
 }
