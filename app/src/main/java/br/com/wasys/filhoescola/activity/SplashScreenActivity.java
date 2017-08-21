@@ -37,6 +37,7 @@ public class SplashScreenActivity extends BaseActivity {
         }
         if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
             String token = FirebaseInstanceId.getInstance().getToken();
+            Log.d("TokenFirebase",token);
             if(token != null && !token.isEmpty()) {
                 DispositivoBusiness business = new DispositivoBusiness(this);
                 Observable<DispositivoModel> observable = business.push(token);
