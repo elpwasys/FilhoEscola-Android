@@ -78,8 +78,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
     @BindView(R.id.calendarView) MaterialCalendarView calendarView;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
 
-    private Long idAluno = Long.parseLong("0");
-    private Long idMensagem = Long.parseLong("0");
+    private Long idAluno;
 
     private MensagemHeadersAdapter adapter;
 
@@ -96,11 +95,6 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
         setContentView(R.layout.activity_mensagem_aluno);
 
         idAluno = getIntent().getLongExtra("idAluno",0);
-
-        if(idAluno == 0){
-            idMensagem = getIntent().getLongExtra("idMensagem",0);
-            idAluno = Realm.getDefaultInstance().where(Mensagem.class).equalTo("id",idMensagem).findFirst().getAluno().getId();
-        }
 
         ButterKnife.bind(this);
 
@@ -153,7 +147,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
     }
     public void montaLista(){
         Aluno aluno = Realm.getDefaultInstance().where(Aluno.class).equalTo("id",idAluno).findFirst();
-        mensagens = Realm.getDefaultInstance().where(Mensagem.class).equalTo("aluno.id",aluno.getId()).findAllSorted("data");
+        mensagens = aluno.getMensagens().sort("data");
         getSupportActionBar().setTitle(aluno.getNome());
         adapter = new MensagemHeadersAdapter(mensagens, this);
         recyclerView.setAdapter(adapter);
@@ -188,7 +182,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
                 Button btnAcao = (Button) dialog.findViewById(R.id.btnAcao);
 
 
-                txtNomeAluno.setText(obj.getAluno().getNome());
+                txtNomeAluno.setText(obj.getFuncionario().getNome());
                 txtEscola.setText(obj.getEscola().getNome());
                 imgAssunto.setImageResource(Assunto.getAssunto(obj.getAssunto()).getImagem());
                 txtAssunto.setText(Assunto.getAssunto(obj.getAssunto()).toString());
@@ -200,7 +194,11 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
                     @Override
                     public void onClick(View v) {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(obj.getBotaoLink()));
+                            String url = obj.getBotaoLink();
+                            if(!url.contains("http")){
+                                url = "http://"+url;
+                            }
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                             MensagensAlunoActivity.this.startActivity(intent);
                         }catch (Exception e){
                             e.printStackTrace();
@@ -213,6 +211,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        montaLista();
                     }
                 });
 
@@ -221,9 +220,6 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
                 dialog.show();
             }
         });
-        if(idMensagem != 0){
-            adapter.getItemClickListener().onItemClick(idMensagem);
-        }
 
     }
 

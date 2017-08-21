@@ -26,15 +26,14 @@ public class SplashScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(!checkedSelfPermission(PHONE)){
             ActivityCompat.requestPermissions(this,PHONE,500);
             return;
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         if(FilhoNaEscolaApplication.getDispositivoLogado() != null && FilhoNaEscolaApplication.getDispositivoLogado().status == StatusDispositivo.VERIFICADO){
             String token = FirebaseInstanceId.getInstance().getToken();
@@ -63,14 +62,13 @@ public class SplashScreenActivity extends BaseActivity {
                                 home();
                             }
                         });
-            }else {
+            }else{
                 home();
             }
         }else{
             startActivity(new Intent(this,CadastroActivity.class));
             finish();
         }
-
     }
 
     @Override

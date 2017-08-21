@@ -1,6 +1,7 @@
 package br.com.wasys.filhoescola.adapter;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,6 +70,10 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Mensagem
         holder.txtMensagem.setText(obj.getConteudo());
         holder.txtAssunto.setText(Assunto.getAssunto(obj.getAssunto()).toString());
         holder.imgAssunto.setImageResource(Assunto.getAssunto(obj.getAssunto()).getImagem());
+
+        if(!obj.getLida()){
+            holder.txtMensagem.setTypeface(null, Typeface.BOLD);
+        }
 
         holder.imgEscola.setOnClickListener(this);
         holder.txtMensagem.setOnClickListener(this);

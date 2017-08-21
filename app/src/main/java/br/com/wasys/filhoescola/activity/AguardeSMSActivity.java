@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.webkit.WebView;
 import android.widget.EditText;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
@@ -178,12 +181,45 @@ public class AguardeSMSActivity extends BaseActivity {
                         }else {
                             FilhoNaEscolaApplication.setAuthorization(dispositivoModel1.token);
                             FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
-                            home();
+                            cadastraTokenPush();
                         }
                     }
                 });
 
 
+    }
+
+    public void cadastraTokenPush(){
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("TokenFirebase",token);
+        if(token != null && !token.isEmpty()) {
+            DispositivoBusiness business = new DispositivoBusiness(this);
+            Observable<DispositivoModel> observable = business.push(token);
+            prepare(observable)
+                    .subscribe(new Subscriber<DispositivoModel>() {
+                        @Override
+                        public void onStart() {
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            home();
+                        }
+
+                        @Override
+                        public void onNext(DispositivoModel dispositivoModel1) {
+                            Log.d("DispositivoModel", dispositivoModel1.toString());
+                            home();
+                        }
+                    });
+        }else{
+            home();
+        }
     }
     @OnClick(R.id.btn_reenviar)
     public void reenviar() {

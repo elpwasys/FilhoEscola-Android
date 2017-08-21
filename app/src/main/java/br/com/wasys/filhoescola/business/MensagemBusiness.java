@@ -79,7 +79,10 @@ public class MensagemBusiness extends Business {
 
                     mensagem.setEscola(escola);
                     mensagem.setFuncionario(funcionario);
-                    mensagem.setAluno(aluno);
+
+                    if(!mensagem.getAlunos().contains(aluno)) {
+                        mensagem.getAlunos().add(aluno);
+                    }
 
                     aluno.setEscola(escola);
                     if(!aluno.getMensagens().contains(mensagem)) {
@@ -157,7 +160,10 @@ public class MensagemBusiness extends Business {
 
                 mensagem.setEscola(escola);
                 mensagem.setFuncionario(funcionario);
-                mensagem.setAluno(aluno);
+
+                if(!mensagem.getAlunos().contains(aluno)) {
+                    mensagem.getAlunos().add(aluno);
+                }
 
                 aluno.setEscola(escola);
                 if(!aluno.getMensagens().contains(mensagem)) {

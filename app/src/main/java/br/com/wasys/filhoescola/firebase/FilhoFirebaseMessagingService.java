@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import br.com.wasys.filhoescola.activity.MensagensActivity;
 import br.com.wasys.filhoescola.activity.MensagensAlunoActivity;
 import br.com.wasys.filhoescola.business.MensagemBusiness;
 import br.com.wasys.filhoescola.enumeradores.Assunto;
@@ -54,8 +55,7 @@ public class FilhoFirebaseMessagingService extends FirebaseMessagingService {
                         @Override
                         public void onNext(Long id) {
                             Log.d("MensagemId",id+"");
-                            Intent intent = new Intent(getBaseContext(), MensagensAlunoActivity.class);
-                            intent.putExtra("idMensagem",id);
+                            Intent intent = new Intent(getBaseContext(), MensagensActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent,
                                     PendingIntent.FLAG_ONE_SHOT);

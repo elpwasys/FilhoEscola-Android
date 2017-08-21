@@ -31,6 +31,7 @@ public enum Assunto {
     }
 
     public static Assunto getAssunto(String assunto) {
+        assunto = assunto.toUpperCase();
         if(assunto.equals("PROVA")){
             return PROVA;
         }else if(assunto.equals("MENSAGEM")){
