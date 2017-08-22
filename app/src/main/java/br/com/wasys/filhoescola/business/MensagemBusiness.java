@@ -1,6 +1,7 @@
 package br.com.wasys.filhoescola.business;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +54,7 @@ public class MensagemBusiness extends Business {
                 List<MensagemModel> models = Endpoint.execute(call);
                 Realm realm = Realm.getDefaultInstance();
                 for (MensagemModel model : models) {
+                    Log.d("Mensagem","Aluno="+model.aluno.nome+" Mensagem="+model.conteudo);
                     realm.beginTransaction();
                     Aluno aluno = realm.where(Aluno.class).equalTo("id",model.aluno.id).findFirst();
                     if(aluno == null){

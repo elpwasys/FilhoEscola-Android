@@ -18,6 +18,7 @@ import br.com.wasys.filhoescola.model.DispositivoModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -155,6 +156,11 @@ public class AguardeSMSActivity extends BaseActivity {
         codigo.append(edtDigito4.getText().toString());
         codigo.append(edtDigito5.getText().toString());
         codigo.append(edtDigito6.getText().toString());
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
 
         DispositivoBusiness business = new DispositivoBusiness(this);
         Observable<DispositivoModel> observable = business.verificar(dispositivoModel.prefixo,dispositivoModel.numero,codigo.toString());

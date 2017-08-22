@@ -2,6 +2,7 @@ package br.com.wasys.filhoescola.endpoint;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +52,7 @@ public class Endpoint {
         String authorization = FilhoNaEscolaApplication.getAuthorization();
         if (StringUtils.isNotBlank(authorization)) {
             headers.put(DeviceHeader.AUTHORIZATION.key, authorization);
+            Log.d("TokenEndpoint",authorization);
         }
         return headers;
     }
