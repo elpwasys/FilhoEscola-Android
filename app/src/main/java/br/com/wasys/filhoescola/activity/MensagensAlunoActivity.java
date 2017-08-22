@@ -158,6 +158,7 @@ public class MensagensAlunoActivity extends BaseActivity implements OnDateSelect
             type2.add(mensagem.getData());
         }
 
+        calendarView.removeDecorators();
         calendarView.addDecorator(new EventDecorator(Color.RED,type2));
 
         recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
