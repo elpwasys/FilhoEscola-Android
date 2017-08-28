@@ -1,34 +1,36 @@
 package br.com.wasys.filhoescola.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.List;
+
 import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.adapter.AlunoAdapter;
-import br.com.wasys.filhoescola.business.MensagemBusiness;
-import br.com.wasys.filhoescola.realm.Aluno;
+import br.com.wasys.filhoescola.model.AlunoModel;
+import br.com.wasys.filhoescola.service.AlunoService;
+import br.com.wasys.filhoescola.service.MensagemService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action1;
 
 public class MensagensActivity extends BaseActivity {
 
@@ -57,7 +59,7 @@ public class MensagensActivity extends BaseActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        MensagemBusiness business = new MensagemBusiness(this);
+        MensagemService business = new MensagemService();
         Observable<Boolean> observable = business.buscar();
         prepare(observable)
                 .subscribe(new Subscriber<Boolean>() {
@@ -87,30 +89,42 @@ public class MensagensActivity extends BaseActivity {
 
         initNavigationDrawer();
 
-
-
     }
-    public void montaLista(){
-        RealmResults<Aluno> alunos = Realm.getDefaultInstance().where(Aluno.class).findAll();
-        if(alunos.isEmpty()){
+
+    private void atualizar(List<AlunoModel> models) {
+        if (CollectionUtils.isEmpty(models)) {
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
-        }else {
-            adapter = new AlunoAdapter(alunos, this);
+        } else {
+            adapter = new AlunoAdapter(models);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             recyclerView.setVisibility(View.VISIBLE);
             txtEmpty.setVisibility(View.GONE);
-            adapter.setOnItemClickListener(new AlunoAdapter.ItemClickListener() {
+
+            adapter.setOnItemClickListener(new AlunoAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(Long position) {
+                public void onItemClick(int index, AlunoModel model) {
                     Intent intent = new Intent(MensagensActivity.this,MensagensAlunoActivity.class);
-                    intent.putExtra("idAluno",position);
+                    intent.putExtra("idAluno", model.id);
                     startActivity(intent);
                     finish();
                 }
             });
         }
+    }
+
+    public void montaLista(){
+
+        showProgress();
+        Observable<List<AlunoModel>> observable = AlunoService.Async.listar();
+        prepare(observable).subscribe(new Action1<List<AlunoModel>>() {
+            @Override
+            public void call(List<AlunoModel> models) {
+                hideProgress();
+                atualizar(models);
+            }
+        });
     }
 
     public void initNavigationDrawer() {
@@ -151,7 +165,7 @@ public class MensagensActivity extends BaseActivity {
         ImageView imagemView = (ImageView) header.findViewById(R.id.img_user);
         tv_email.setText(FilhoNaEscolaApplication.getDispositivoLogado().nome);
         Picasso.with(this)
-                .load(BuildConfig.BASE_URL+BuildConfig.BASE_CONTEXT_FILE+FilhoNaEscolaApplication.getDispositivoLogado().imagemURI)
+                .load(BuildConfig.URL_FILE + FilhoNaEscolaApplication.getDispositivoLogado().imagemURI)
                 .placeholder(R.mipmap.ico_usuario)
                 .error(R.mipmap.ico_usuario)
                 .into(imagemView);

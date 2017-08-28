@@ -2,25 +2,19 @@ package br.com.wasys.filhoescola.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.DateFormat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.business.DispositivoBusiness;
-import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
+import br.com.wasys.filhoescola.service.DispositivoService;
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.library.utils.FieldUtils;
 import br.com.wasys.library.widget.edittext.DDDPhoneTextEdit;
-import br.com.wasys.library.widget.edittext.DDDTextEdit;
 import br.com.wasys.library.widget.edittext.DateTextEdit;
-import br.com.wasys.library.widget.edittext.PhoneTextEdit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +26,11 @@ public class CadastroActivity extends BaseActivity {
     @BindView(R.id.edt_numero) DDDPhoneTextEdit edtDDDPhone;
     @BindView(R.id.edt_data_nascimento) DateTextEdit edtDataNascimento;
     @BindView(R.id.edt_nome_completo) EditText edtNomeCompleto;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, CadastroActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,7 @@ public class CadastroActivity extends BaseActivity {
         dispositivoModel.prefixo = edtDDDPhone.getPhoneNumber().substring(0,2);
         dispositivoModel.numero = edtDDDPhone.getPhoneNumber().substring(2);
 
-        DispositivoBusiness business = new DispositivoBusiness(this);
+        DispositivoService business = new DispositivoService();
         Observable<DispositivoModel> observable = business.confirmar(dispositivoModel);
         prepare(observable)
                 .subscribe(new Subscriber<DispositivoModel>() {
@@ -116,15 +115,12 @@ public class CadastroActivity extends BaseActivity {
                     }
                     @Override
                     public void onNext(DispositivoModel dispositivoModel1) {
-                        Intent intent = new Intent(CadastroActivity.this,AguardeSMSActivity.class);
-                        intent.putExtra("dispositivo",dispositivoModel1);
+                        FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
+                        Intent intent = AguardeSMSActivity.newIntent(CadastroActivity.this, dispositivoModel1);
                         startActivity(intent);
                         finish();
-                        FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel1);
                     }
                 });
-
-
 
     }
 }

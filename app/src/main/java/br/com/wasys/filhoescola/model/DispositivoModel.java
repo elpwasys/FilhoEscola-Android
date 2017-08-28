@@ -20,4 +20,5 @@ public class DispositivoModel implements Serializable{
     public StatusDispositivo status;
     public String imagemURI;
 
+    public static final String KEY = DispositivoModel.class.getName();
 }

@@ -16,29 +16,28 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import br.com.wasys.filhoescola.activity.MensagensActivity;
-import br.com.wasys.filhoescola.activity.MensagensAlunoActivity;
-import br.com.wasys.filhoescola.business.MensagemBusiness;
 import br.com.wasys.filhoescola.enumeradores.Assunto;
+import br.com.wasys.filhoescola.service.MensagemService;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
- * Created by bruno on 19/08/17.
+ * Created by pascke on 24/08/17.
  */
 
-public class FilhoFirebaseMessagingService extends FirebaseMessagingService {
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMService";
+
     private Looper mLooper;
     private HandlerThread mHandlerThread;
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         if (remoteMessage.getData().size() > 0) {
-            MensagemBusiness business = new MensagemBusiness(this);
+            MensagemService business = new MensagemService();
             Observable<Long> observable = business.getMensagem(remoteMessage.getData().get("id"));
             prepare(observable)
                     .subscribe(new Subscriber<Long>() {
@@ -90,6 +89,7 @@ public class FilhoFirebaseMessagingService extends FirebaseMessagingService {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.from(getLooper()));
     }
+
     protected Looper getLooper() {
         if (mLooper == null) {
             if (mHandlerThread == null) {

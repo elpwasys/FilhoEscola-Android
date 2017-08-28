@@ -2,7 +2,6 @@ package br.com.wasys.filhoescola.endpoint;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.wasys.filhoescola.BuildConfig;
-
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.library.enumerator.DeviceHeader;
@@ -25,10 +23,8 @@ import retrofit2.Call;
  */
 public class Endpoint {
 
-    public static final String BASE_URL = BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_REST;
-
     public static <T> T create(Class<T> clazz) {
-        return br.com.wasys.library.http.Endpoint.create(clazz, BASE_URL, getHeaders());
+        return br.com.wasys.library.http.Endpoint.create(clazz, BuildConfig.URL_REST, getHeaders());
     }
 
     public static <T> T execute(Call<T> call) throws EndpointException {
@@ -51,8 +47,7 @@ public class Endpoint {
         headers.put(DeviceHeader.DEVICE_APP_VERSION.key, String.valueOf(AndroidUtils.getVersionCode(context)));
         String authorization = FilhoNaEscolaApplication.getAuthorization();
         if (StringUtils.isNotBlank(authorization)) {
-            headers.put(DeviceHeader.AUTHORIZATION.key, authorization);
-            Log.d("TokenEndpoint",authorization);
+            headers.put(DeviceHeader.DEVICE_TOKEN.key, authorization);
         }
         return headers;
     }

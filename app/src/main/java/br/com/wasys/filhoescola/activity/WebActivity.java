@@ -1,56 +1,37 @@
 package br.com.wasys.filhoescola.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Parcelable;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Xml;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.endpoint.Endpoint;
-import br.com.wasys.filhoescola.enumeradores.TipoFuncionario;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
 import br.com.wasys.filhoescola.model.ButtonModel;
 import br.com.wasys.filhoescola.model.DispositivoModel;
@@ -79,9 +60,14 @@ public class WebActivity extends BaseActivity {
     @BindView(R.id.txtToolbar)
     TextView txtToolbar;
 
-    public static final String BASE_URL = BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_MOBILE;
 
     private TipoPagina tipo;
+
+    public static Intent newIntent(Context context, TipoPagina tipo) {
+        Intent intent = new Intent(context, WebActivity.class);
+        intent.putExtra(TipoPagina.KEY, tipo);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +115,7 @@ public class WebActivity extends BaseActivity {
         });
         webView.setWebViewClient(new WebViewClient(getApplicationContext()));
 
-        tipo = (TipoPagina) getIntent().getSerializableExtra("tipo");
+        tipo = (TipoPagina) getIntent().getSerializableExtra(TipoPagina.KEY);
         loadPage();
 
         initNavigationDrawer();
@@ -145,7 +131,7 @@ public class WebActivity extends BaseActivity {
             for (ButtonModel buttonModel : viewModel.getToolbar().getButtons()) {
                 ImageView imagemView = new ImageView(this);
                 Picasso.with(this)
-                        .load(BuildConfig.BASE_URL + buttonModel.getSrc())
+                        .load(BuildConfig.URL_BASE + buttonModel.getSrc())
                         .placeholder(R.mipmap.ic_exit_to_app_black_24dp)
                         .error(R.mipmap.ic_exit_to_app_black_24dp)
                         .into(imagemView);
@@ -183,19 +169,19 @@ public class WebActivity extends BaseActivity {
         Log.d("Token",FilhoNaEscolaApplication.getAuthorization());
         switch (tipo) {
             case INICIO:
-                webView.loadUrl(BASE_URL + "aluno/configuracao.xhtml", map);
+                webView.loadUrl(BuildConfig.URL_MOBILE + "aluno/configuracao.xhtml", map);
                 break;
             case MEUCADASTRO:
-                webView.loadUrl(BASE_URL + "meu-cadastro.xhtml", map);
+                webView.loadUrl(BuildConfig.URL_MOBILE + "meu-cadastro.xhtml", map);
                 break;
             case CONFIGURAR:
-                webView.loadUrl(BASE_URL + "aluno/configuracao.xhtml", map);
+                webView.loadUrl(BuildConfig.URL_MOBILE + "aluno/configuracao.xhtml", map);
                 break;
             case AJUDA:
-                webView.loadUrl(BASE_URL + "ajuda.xhtml", map);
+                webView.loadUrl(BuildConfig.URL_MOBILE + "ajuda.xhtml", map);
                 break;
             default:
-                webView.loadUrl(BASE_URL + "aluno/inicio.xhtml", map);
+                webView.loadUrl(BuildConfig.URL_MOBILE + "aluno/configuracao.xhtml", map);
         }
     }
 
@@ -242,7 +228,7 @@ public class WebActivity extends BaseActivity {
         ImageView imagemView = (ImageView) header.findViewById(R.id.img_user);
         tv_email.setText(FilhoNaEscolaApplication.getDispositivoLogado().nome);
         Picasso.with(this)
-                .load(BuildConfig.BASE_URL+BuildConfig.BASE_CONTEXT_FILE+FilhoNaEscolaApplication.getDispositivoLogado().imagemURI)
+                .load(BuildConfig.URL_FILE + FilhoNaEscolaApplication.getDispositivoLogado().imagemURI)
                 .placeholder(R.mipmap.ico_usuario)
                 .error(R.mipmap.ico_usuario)
                 .into(imagemView);

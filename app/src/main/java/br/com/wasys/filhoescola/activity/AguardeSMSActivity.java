@@ -1,24 +1,24 @@
 package br.com.wasys.filhoescola.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.webkit.WebView;
 import android.widget.EditText;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.apache.commons.lang3.StringUtils;
+
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.business.DispositivoBusiness;
 import br.com.wasys.filhoescola.enumeradores.StatusDispositivo;
 import br.com.wasys.filhoescola.model.DispositivoModel;
+import br.com.wasys.filhoescola.service.DispositivoService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.Realm;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -33,14 +33,27 @@ public class AguardeSMSActivity extends BaseActivity {
 
     DispositivoModel dispositivoModel;
 
+    public static Intent newIntent(Context context) {
+        return newIntent(context, null);
+    }
+
+    public static Intent newIntent(Context context, DispositivoModel dispositivo) {
+        Intent intent = new Intent(context, AguardeSMSActivity.class);
+        if (dispositivo != null) {
+            intent.putExtra(DispositivoModel.KEY, dispositivo);
+        }
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_aguarde_sms);
 
+        setContentView(R.layout.activity_aguarde_sms);
         ButterKnife.bind(this);
 
-        dispositivoModel = (DispositivoModel) getIntent().getSerializableExtra("dispositivo");
+        Intent intent = getIntent();
+        dispositivoModel = (DispositivoModel) intent.getSerializableExtra(DispositivoModel.KEY);
 
         if(dispositivoModel == null){
             showSnack(getString(R.string.msg_erro_cadastro));
@@ -157,12 +170,7 @@ public class AguardeSMSActivity extends BaseActivity {
         codigo.append(edtDigito5.getText().toString());
         codigo.append(edtDigito6.getText().toString());
 
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.deleteAll();
-        realm.commitTransaction();
-
-        DispositivoBusiness business = new DispositivoBusiness(this);
+        DispositivoService business = new DispositivoService();
         Observable<DispositivoModel> observable = business.verificar(dispositivoModel.prefixo,dispositivoModel.numero,codigo.toString());
         prepare(observable)
                 .subscribe(new Subscriber<DispositivoModel>() {
@@ -195,41 +203,32 @@ public class AguardeSMSActivity extends BaseActivity {
 
     }
 
-    public void cadastraTokenPush(){
-        String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d("TokenFirebase",token);
-        if(token != null && !token.isEmpty()) {
-            DispositivoBusiness business = new DispositivoBusiness(this);
-            Observable<DispositivoModel> observable = business.push(token);
-            prepare(observable)
-                    .subscribe(new Subscriber<DispositivoModel>() {
-                        @Override
-                        public void onStart() {
-                        }
-
-                        @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            home();
-                        }
-
-                        @Override
-                        public void onNext(DispositivoModel dispositivoModel1) {
-                            Log.d("DispositivoModel", dispositivoModel1.toString());
-                            home();
-                        }
-                    });
-        }else{
-            home();
+    public void cadastraTokenPush() {
+        String pushToken = FirebaseInstanceId.getInstance().getToken();
+        if (StringUtils.isNotBlank(pushToken)) {
+            showProgress();
+            Observable<DispositivoModel> observable = DispositivoService.Async.atualizar(pushToken);
+            prepare(observable).subscribe(new Subscriber<DispositivoModel>() {
+                @Override
+                public void onCompleted() {
+                    hideProgress();
+                }
+                @Override
+                public void onError(Throwable e) {
+                    hideProgress();
+                    showSnack(e.getMessage());
+                }
+                @Override
+                public void onNext(DispositivoModel dispositivoModel) {
+                    FilhoNaEscolaApplication.setDispositivoLogado(dispositivoModel);
+                    home();
+                }
+            });
         }
     }
     @OnClick(R.id.btn_reenviar)
     public void reenviar() {
-        DispositivoBusiness business = new DispositivoBusiness(this);
+        DispositivoService business = new DispositivoService();
         Observable<DispositivoModel> observable = business.reenviar(dispositivoModel.prefixo,dispositivoModel.numero);
         prepare(observable)
                 .subscribe(new Subscriber<DispositivoModel>() {

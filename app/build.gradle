@@ -4,28 +4,32 @@ apply plugin: 'realm-android'
 
 
 android {
-
-
+    def properties = { k -> "\"${project.properties.get(k)}\"" }
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "br.com.wasys.filhoescola"
+        applicationId "br.com.wasys.app.filhoescola"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // build config fields
+        buildConfigField('String', 'URL_REST', 'BuildConfig.URL_BASE + "/rest/"')
+        buildConfigField('String', 'URL_FILE', 'BuildConfig.URL_BASE + "/file/"')
+        buildConfigField('String', 'URL_MOBILE', 'BuildConfig.URL_BASE + "/mobile/"')
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+            buildConfigField('String', 'URL_BASE', properties('debug.server.url'))
+        }
         release {
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            buildConfigField 'String', 'BASE_URL', "\"http://mlife02.wasys.com.br:8080/filhoescola/\""
-            buildConfigField 'String', 'BASE_CONTEXT_MOBILE', "\"mobile/\""
-            buildConfigField 'String', 'BASE_CONTEXT_REST', "\"rest/\""
-            buildConfigField 'String', 'BASE_CONTEXT_FILE', "\"file/\""
+            buildConfigField('String', 'URL_BASE', properties('debug.server.url'))
         }
     }
     packagingOptions {
@@ -48,8 +52,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.0.0'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
-    compile 'com.google.firebase:firebase-core:10.0.1'
-    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.2.6'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
 

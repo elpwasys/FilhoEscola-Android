@@ -5,15 +5,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +17,6 @@ import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.R;
 import br.com.wasys.filhoescola.enumeradores.TipoPagina;
-import br.com.wasys.filhoescola.enumeradores.TypeMessage;
 import br.com.wasys.filhoescola.model.MessageModel;
 import br.com.wasys.filhoescola.realm.Cache;
 import br.com.wasys.library.activity.AppActivity;
@@ -105,6 +99,7 @@ public class BaseActivity extends AppActivity {
         realm.beginTransaction();
         realm.deleteAll();
         realm.commitTransaction();
+        FilhoNaEscolaApplication.setAuthorization(null);
         FilhoNaEscolaApplication.setDispositivoLogado(null);
         startActivity(new Intent(this, CadastroActivity.class));
         finish();
@@ -120,8 +115,7 @@ public class BaseActivity extends AppActivity {
     }
 
     public void openWeb(TipoPagina tipoPagina) {
-        Intent intent = new Intent(this, WebActivity.class);
-        intent.putExtra("tipo", tipoPagina);
+        Intent intent = WebActivity.newIntent(this, tipoPagina);
         startActivity(intent);
         finish();
     }
@@ -142,7 +136,7 @@ public class BaseActivity extends AppActivity {
                 .addFormDataPart("file", imageName, RequestBody.create(MEDIA_TYPE_PNG, bos.toByteArray()))
                 .build();
 
-        Request request = new Request.Builder().url(BuildConfig.BASE_URL + BuildConfig.BASE_CONTEXT_REST+ "/file/upload")
+        Request request = new Request.Builder().url(BuildConfig.URL_REST + "file/upload")
                 .post(requestBody).build();
 
         Response response = client.newCall(request).execute();

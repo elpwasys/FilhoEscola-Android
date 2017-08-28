@@ -1,11 +1,11 @@
-package br.com.wasys.filhoescola.business;
+package br.com.wasys.filhoescola.service;
 
-import android.content.Context;
+import org.apache.commons.lang3.StringUtils;
 
+import br.com.wasys.filhoescola.FilhoNaEscolaApplication;
 import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
 import br.com.wasys.filhoescola.endpoint.Endpoint;
 import br.com.wasys.filhoescola.model.DispositivoModel;
-import io.realm.Realm;
 import retrofit2.Call;
 import rx.Observable;
 import rx.Subscriber;
@@ -14,10 +14,17 @@ import rx.Subscriber;
  * Created by bruno on 09/07/17.
  */
 
-public class DispositivoBusiness extends Business {
+public class DispositivoService extends Service {
 
-    public DispositivoBusiness(Context context) {
-        super(context);
+    public static DispositivoModel atualizar(String pushToken) throws Throwable {
+        String authorization = FilhoNaEscolaApplication.getAuthorization();
+        if (StringUtils.isBlank(authorization)) {
+            return FilhoNaEscolaApplication.getDispositivoLogado();
+        }
+        DispositivoEndpoint endpoint = Endpoint.create(DispositivoEndpoint.class);
+        Call<DispositivoModel> call = endpoint.push(pushToken);
+        DispositivoModel dispositivoModel = Endpoint.execute(call);
+        return dispositivoModel;
     }
 
     public Observable<DispositivoModel> confirmar(DispositivoModel dispositivoModel) {
@@ -124,6 +131,24 @@ public class DispositivoBusiness extends Business {
                 subscriber.onError(e);
             } finally {
             }
+        }
+    }
+
+    public static class Async {
+
+        public static Observable<DispositivoModel> atualizar(final String pushToken) {
+            return Observable.create(new Observable.OnSubscribe<DispositivoModel>() {
+                @Override
+                public void call(Subscriber<? super DispositivoModel> subscriber) {
+                    try {
+                        DispositivoModel dispositivoModel = DispositivoService.atualizar(pushToken);
+                        subscriber.onNext(dispositivoModel);
+                        subscriber.onCompleted();
+                    } catch (Throwable e) {
+                        subscriber.onError(e);
+                    }
+                }
+            });
         }
     }
 }

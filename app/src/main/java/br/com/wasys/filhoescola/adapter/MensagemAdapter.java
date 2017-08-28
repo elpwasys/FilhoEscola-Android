@@ -1,107 +1,96 @@
 package br.com.wasys.filhoescola.adapter;
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+
+import java.util.List;
 
 import br.com.wasys.filhoescola.BuildConfig;
 import br.com.wasys.filhoescola.R;
-import br.com.wasys.filhoescola.activity.BaseActivity;
 import br.com.wasys.filhoescola.enumeradores.Assunto;
-import br.com.wasys.filhoescola.realm.Mensagem;
+import br.com.wasys.filhoescola.model.MensagemModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmList;
-import io.realm.RealmRecyclerViewAdapter;
-import io.realm.RealmResults;
 
 /**
  * Created by bruno on 14/07/17.
  */
 
-public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, MensagemAdapter.ViewHolder> implements View.OnClickListener{
+public class MensagemAdapter extends RecyclerView.Adapter<MensagemAdapter.ViewHolder> implements View.OnClickListener {
 
-    public BaseActivity activity;
-    private ItemClickListener itemClickListener;
+    private List<MensagemModel> mDataSet;
+    private OnItemClickListener mOnItemClickListener;
 
-    public MensagemAdapter(RealmResults<Mensagem> data, BaseActivity activity) {
-        super(data, true);
-        setHasStableIds(true);
-        this.activity = activity;
-    }
-    public MensagemAdapter(RealmList<Mensagem> data, BaseActivity activity) {
-        super(data, true);
-        setHasStableIds(true);
-        this.activity = activity;
-    }
-
-    public void setOnItemClickListener(ItemClickListener itemClickListener){
-        this.itemClickListener = itemClickListener;
-    }
-
-    public ItemClickListener getItemClickListener() {
-        return itemClickListener;
+    public MensagemAdapter(List<MensagemModel> mDataSet) {
+        this.mDataSet = mDataSet;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_mensagem, parent, false);
-        return new ViewHolder(itemView);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.adapter_mensagem, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.mView.setOnClickListener(this);
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Mensagem obj = getItem(position);
-        Picasso.with(activity)
-                .load(BuildConfig.BASE_URL+BuildConfig.BASE_CONTEXT_FILE+obj.getEscola().getImagem().getCaminho())
+        final MensagemModel model = mDataSet.get(position);
+        Context context = holder.mView.getContext();
+        holder.mPosition = position;
+        holder.mView.setTag(holder);
+        Picasso.with(context)
+                .load(BuildConfig.URL_BASE + "/" + model.escola.logo.caminho)
                 .into(holder.imgEscola);
-        holder.txtMensagem.setText(obj.getConteudo());
-        holder.txtAssunto.setText(Assunto.getAssunto(obj.getAssunto()).toString());
-        holder.imgAssunto.setImageResource(Assunto.getAssunto(obj.getAssunto()).getImagem());
-
-        if(!obj.getLida()){
+        holder.txtMensagem.setText(model.conteudo);
+        holder.txtAssunto.setText(model.assunto.toString());
+        holder.imgAssunto.setImageResource(model.assunto.getImagem());
+        if (BooleanUtils.isNotTrue(model.lida)){
             holder.txtMensagem.setTypeface(null, Typeface.BOLD);
         }
-
-        holder.imgEscola.setOnClickListener(this);
-        holder.txtMensagem.setOnClickListener(this);
-        holder.txtAssunto.setOnClickListener(this);
-        holder.imgAssunto.setOnClickListener(this);
-        holder.linearLayout.setOnClickListener(this);
-        holder.linearLayout.setTag(obj.getId());
-        holder.imgEscola.setTag(obj.getId());
-        holder.txtMensagem.setTag(obj.getId());
-        holder.txtAssunto.setTag(obj.getId());
-        holder.imgAssunto.setTag(obj.getId());
-
     }
 
     @Override
-    public long getItemId(int index) {
-        return getItem(index).getId();
+    public int getItemCount() {
+        return CollectionUtils.size(mDataSet);
     }
 
     @Override
-    public void onClick(View v) {
-
-        if(itemClickListener != null) {
-            itemClickListener.onItemClick((Long) v.getTag());
+    public void onClick(View view) {
+        ViewHolder holder = (ViewHolder) view.getTag();
+        if (holder != null) {
+            MensagemModel model = mDataSet.get(holder.mPosition);
+            if (view == holder.mView) {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(holder.mPosition, model);
+                }
+            }
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
+
+        private View mView;
+        private int mPosition;
+
         @BindView(R.id.imgEscola) ImageView imgEscola;
         @BindView(R.id.imgAssunto) ImageView imgAssunto;
         @BindView(R.id.txtAssunto) TextView txtAssunto;
@@ -110,12 +99,12 @@ public class MensagemAdapter extends RealmRecyclerViewAdapter<Mensagem, Mensagem
 
         ViewHolder(View view) {
             super(view);
+            mView = view;
             ButterKnife.bind(this, view);
         }
     }
-    public interface ItemClickListener {
 
-        void onItemClick(Long position);
+    public interface OnItemClickListener {
+        void onItemClick(int index, MensagemModel model);
     }
-
 }

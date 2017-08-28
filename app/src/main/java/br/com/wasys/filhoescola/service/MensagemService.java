@@ -1,27 +1,20 @@
-package br.com.wasys.filhoescola.business;
+package br.com.wasys.filhoescola.service;
 
-import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import br.com.wasys.filhoescola.endpoint.DispositivoEndpoint;
 import br.com.wasys.filhoescola.endpoint.Endpoint;
 import br.com.wasys.filhoescola.endpoint.MensagemEndpoint;
 import br.com.wasys.filhoescola.enumeradores.StatusMensagemSincronizacao;
-import br.com.wasys.filhoescola.enumeradores.TipoVisualizacao;
-import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.filhoescola.model.MensagemModel;
 import br.com.wasys.filhoescola.model.SuccessModel;
 import br.com.wasys.filhoescola.realm.Aluno;
 import br.com.wasys.filhoescola.realm.Escola;
 import br.com.wasys.filhoescola.realm.Funcionario;
 import br.com.wasys.filhoescola.realm.Mensagem;
-import br.com.wasys.library.utils.DateUtils;
 import io.realm.Realm;
-import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import rx.Observable;
@@ -31,10 +24,49 @@ import rx.Subscriber;
  * Created by bruno on 09/07/17.
  */
 
-public class MensagemBusiness extends Business {
+public class MensagemService extends Service {
 
-    public MensagemBusiness(Context context) {
-        super(context);
+    public static void read(Long id) throws Throwable {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.beginTransaction();
+            RealmQuery<Mensagem> query = realm.where(Mensagem.class)
+                    .equalTo("id", id);
+            Mensagem mensagem = query.findFirst();
+            mensagem.setLida(true);
+            realm.commitTransaction();
+        } catch (Throwable e) {
+            if (realm.isInTransaction()) {
+                realm.cancelTransaction();
+            }
+            throw e;
+        } finally {
+            realm.close();
+        }
+    }
+
+    public static MensagemModel get(Long id) throws Throwable {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            RealmQuery<Mensagem> query = realm.where(Mensagem.class)
+                    .equalTo("id", id);
+            Mensagem mensagem = query.findFirst();
+            return MensagemModel.from(mensagem);
+        } finally {
+            realm.close();
+        }
+    }
+
+    public static List<MensagemModel> findByAluno(Long id) throws Throwable {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            RealmQuery<Mensagem> query = realm.where(Mensagem.class)
+                    .equalTo("alunos.id", id);
+            RealmResults<Mensagem> results = query.findAll();
+            return MensagemModel.from(results);
+        } finally {
+            realm.close();
+        }
     }
 
     public Observable<Boolean> buscar() {
@@ -43,16 +75,15 @@ public class MensagemBusiness extends Business {
 
     private class BuscaMensagemHandler implements Observable.OnSubscribe<Boolean> {
 
-
         public BuscaMensagemHandler() {
         }
         @Override
         public void call(Subscriber<? super Boolean> subscriber) {
+            Realm realm = Realm.getDefaultInstance();
             try {
                 MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
                 Call<List<MensagemModel>> call = endpoint.buscar();
                 List<MensagemModel> models = Endpoint.execute(call);
-                Realm realm = Realm.getDefaultInstance();
                 for (MensagemModel model : models) {
                     Log.d("Mensagem","Aluno="+model.aluno.nome+" Mensagem="+model.conteudo);
                     realm.beginTransaction();
@@ -112,8 +143,12 @@ public class MensagemBusiness extends Business {
                 subscriber.onNext(true);
                 subscriber.onCompleted();
             } catch (Throwable e) {
+                if (realm.isInTransaction()) {
+                    realm.cancelTransaction();
+                }
                 subscriber.onError(e);
             } finally {
+                realm.close();
             }
         }
     }
@@ -131,11 +166,11 @@ public class MensagemBusiness extends Business {
         }
         @Override
         public void call(Subscriber<? super Long> subscriber) {
+            Realm realm = Realm.getDefaultInstance();
             try {
                 MensagemEndpoint endpoint = Endpoint.create(MensagemEndpoint.class);
                 Call<MensagemModel> call = endpoint.getMensagem(id);
                 MensagemModel model = Endpoint.execute(call);
-                Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 Aluno aluno = realm.where(Aluno.class).equalTo("id",model.aluno.id).findFirst();
                 if(aluno == null){
@@ -192,8 +227,12 @@ public class MensagemBusiness extends Business {
                 subscriber.onNext(mensagem.getId());
                 subscriber.onCompleted();
             } catch (Throwable e) {
+                if (realm.isInTransaction()) {
+                    realm.cancelTransaction();
+                }
                 subscriber.onError(e);
             } finally {
+                realm.close();
             }
         }
     }
@@ -224,4 +263,52 @@ public class MensagemBusiness extends Business {
         }
     }
 
+    public static class Async {
+
+        public static Observable<Boolean> read(final Long id) {
+            return Observable.create(new Observable.OnSubscribe<Boolean>() {
+                @Override
+                public void call(Subscriber<? super Boolean> subscriber) {
+                    try {
+                        MensagemService.read(id);
+                        subscriber.onNext(true);
+                        subscriber.onCompleted();
+                    } catch (Throwable e) {
+                        subscriber.onError(e);
+                    }
+                }
+            });
+        }
+
+        public static Observable<MensagemModel> get(final Long id) {
+            return Observable.create(new Observable.OnSubscribe<MensagemModel>() {
+                @Override
+                public void call(Subscriber<? super MensagemModel> subscriber) {
+                    try {
+                        MensagemModel model = MensagemService.get(id);
+                        subscriber.onNext(model);
+                        subscriber.onCompleted();
+                    } catch (Throwable e) {
+                        subscriber.onError(e);
+                    }
+                }
+            });
+        }
+
+
+        public static Observable<List<MensagemModel>> findByAluno(final Long id) {
+            return Observable.create(new Observable.OnSubscribe<List<MensagemModel>>() {
+                @Override
+                public void call(Subscriber<? super List<MensagemModel>> subscriber) {
+                    try {
+                        List<MensagemModel> models = MensagemService.findByAluno(id);
+                        subscriber.onNext(models);
+                        subscriber.onCompleted();
+                    } catch (Throwable e) {
+                        subscriber.onError(e);
+                    }
+                }
+            });
+        }
+    }
 }

@@ -9,4 +9,6 @@ public enum TipoPagina {
     MEUCADASTRO,
     CONFIGURAR,
     AJUDA;
+
+    public static final String KEY = TipoPagina.class.getName();
 }

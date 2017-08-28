@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "991615614197",
-    "firebase_url": "https://filho-na-escola-36ae5.firebaseio.com",
-    "project_id": "filho-na-escola-36ae5",
-    "storage_bucket": "filho-na-escola-36ae5.appspot.com"
+    "project_number": "553946597173",
+    "firebase_url": "https://filhoescola-4c0da.firebaseio.com",
+    "project_id": "filhoescola-4c0da",
+    "storage_bucket": "filhoescola-4c0da.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:991615614197:android:10149bd469669113",
+        "mobilesdk_app_id": "1:553946597173:android:080a8a07dc6e09f9",
         "android_client_info": {
-          "package_name": "br.com.wasys.filhoescola"
+          "package_name": "br.com.wasys.app.filhoescola"
         }
       },
       "oauth_client": [
         {
-          "client_id": "991615614197-0acgrj5g6fhovtlvh69gl6lpa9pf5b4e.apps.googleusercontent.com",
+          "client_id": "553946597173-fhvrtpdusd77shjb5c2iem5bugqi2n0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.wasys.app.filhoescola",
+            "certificate_hash": "3574cb3605826933e9bee3fd60a5049a3f8f502a"
+          }
+        },
+        {
+          "client_id": "553946597173-gsffpv00b9q3v7dcat9938fobl3qoutk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA2Ci1VrHWJ9AzmWV8PSOo_AjBtejBN08E"
+          "current_key": "AIzaSyBClBaLTNI1_Sd8Jo3KfjCLIVplLemsIxo"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553946597173-gsffpv00b9q3v7dcat9938fobl3qoutk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

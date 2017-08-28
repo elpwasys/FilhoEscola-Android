@@ -1,5 +1,9 @@
 package br.com.wasys.filhoescola;
 
+import com.google.firebase.FirebaseApp;
+
+import org.apache.commons.lang3.StringUtils;
+
 import br.com.wasys.filhoescola.model.DispositivoModel;
 import br.com.wasys.library.Application;
 import br.com.wasys.library.utils.PreferencesUtils;
@@ -23,6 +27,7 @@ public class FilhoNaEscolaApplication extends Application {
                 .name("data.realm")
                 .build();
         Realm.setDefaultConfiguration(configuration);
+        FirebaseApp.initializeApp(getApplicationContext());
     }
 
     public static String getAuthorization() {
@@ -30,7 +35,11 @@ public class FilhoNaEscolaApplication extends Application {
     }
 
     public static void setAuthorization(String authorization) {
-        PreferencesUtils.put(AUTHORIZATION_PREFERENCES_KEY, authorization);
+        if (StringUtils.isBlank(authorization)) {
+            PreferencesUtils.remove(AUTHORIZATION_PREFERENCES_KEY);
+        } else {
+            PreferencesUtils.put(AUTHORIZATION_PREFERENCES_KEY, authorization);
+        }
     }
 
     public static DispositivoModel getDispositivoLogado() {
@@ -38,7 +47,10 @@ public class FilhoNaEscolaApplication extends Application {
     }
 
     public static void setDispositivoLogado(DispositivoModel dispositivoModel) {
-        PreferencesUtils.putJSON(DISPOSITIVO_PREFERENCES_KEY, dispositivoModel);
+        if (dispositivoModel == null) {
+            PreferencesUtils.remove(DISPOSITIVO_PREFERENCES_KEY);
+        } else {
+            PreferencesUtils.putJSON(DISPOSITIVO_PREFERENCES_KEY, dispositivoModel);
+        }
     }
-
 }

@@ -1,4 +1,4 @@
-package br.com.wasys.filhoescola.service;
+package br.com.wasys.filhoescola.background;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,12 +8,11 @@ import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 
-import br.com.wasys.filhoescola.business.MensagemBusiness;
+import br.com.wasys.filhoescola.service.MensagemService;
 import br.com.wasys.filhoescola.enumeradores.StatusMensagemSincronizacao;
 import br.com.wasys.filhoescola.model.SuccessModel;
 import br.com.wasys.filhoescola.realm.Mensagem;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,7 +44,7 @@ public class SyncMensagensService extends Service {
             realm.beginTransaction();
             mensagens.setStatus(StatusMensagemSincronizacao.ENVIADO);
             realm.commitTransaction();
-            MensagemBusiness business = new MensagemBusiness(this);
+            MensagemService business = new MensagemService();
             Observable<SuccessModel> observable = business.getSync(mensagens.getId());
             prepare(observable)
                     .subscribe(new Subscriber<SuccessModel>() {

@@ -14,6 +14,7 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Mensagem extends RealmObject {
+
     @PrimaryKey
     private Long id;
     private Date data;
